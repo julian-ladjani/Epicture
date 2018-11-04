@@ -30,7 +30,7 @@ class ImageGridAdapter(private val mContext: Context) : BaseAdapter() {
         if (null == convertView) {
             val displayMetrics = mContext.resources.displayMetrics
             myImageView = ImageView(mContext)
-            val dpWidth = (displayMetrics.widthPixels / displayMetrics.densityDpi) / 3
+            val dpWidth = displayMetrics.widthPixels  / 3
             myImageView.layoutParams = ViewGroup.LayoutParams(dpWidth.toInt(), dpWidth.toInt())
             myImageView.scaleType = ImageView.ScaleType.CENTER_CROP
         } else {
