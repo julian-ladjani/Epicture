@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name" translatable="false">Epicture</string>
+    <string name="authenticate">Authenticate</string>
+    <string name="title_activity_authentication">AuthenticationActivity</string>
+    <string name="please_sign_in">Please sign in through Imgur</string>
+    <string name="subreddit_act" translatable="false">&#xf281;</string>
+    <string name="subreddit_placeholder">Subreddit</string>
+    <string name="subreddit_go">GO!</string>
+    <string name="search_placeholder">Search</string>
+    <string name="gallery_act" translatable="false">&#xf015;</string>
+    <string name="points">Points</string>
+    <string name="upload_act" translatable="false">&#xf030;</string>
+    <string name="profile_act" translatable="false">&#xf007;</string>
+    <string name="created_at">Created At:</string>
+    <string name="reputation">Reputation:</string>
+    <string name="bio">Biography:</string>
+    <string name="upload_photo_label">Upload a photo!</string>
+    <string name="upload_from_photo_roll">Pick from gallery</string>
+    <string name="upload_from_new_photo">Take a new photo</string>
+    <string name="search_act" translatable="false">&#xf002;</string>
+    <string name="def_section">Default Section</string>
+    <string name="def_sorting">Default Sorting</string>
+    <string name="def_subreddit">Default Subreddit</string>
+    <string name="def_nsfw">NSFW Content</string>
+    <string name="section_default">Hot</string>
+    <string-array name="section">
+        <item>Hot</item>
+        <item>Top</item>
+        <item>User</item>
+    </string-array>
+    <string name="sort_default">Viral</string>
+    <string-array name="sort">
+        <item>Viral</item>
+        <item>Time</item>
+        <item>Top (today)</item>
+        <item>Top (this week)</item>
+        <item>Top (this month)</item>
+        <item>Top (this year)</item>
+        <item>Top (all time)</item>
+    </string-array>
+    <string name="title_activity_subreddit">SubredditActivity</string>
+    <string name="settings">Settings</string>
+    <string name="quit">Quit</string>
+    <!-- İyi akşamlar ozan bey -->
+    <string name="image_title">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
+    <string name="app_launcher_name" translatable="false">ini</string>
+    <string name="ok">OK</string>
+    <string name="open">Open</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="image_uploaded">Your image is uploaded!</string>
+    <string name="image_uploaded_success">Upload Successful!</string>
+    <string name="username" translatable="false">FanOfCats98</string>
+    <string name="seconds">s</string>
+    <string name="minutes">m</string>
+    <string name="hours">hr</string>
+    <string name="days">d</string>
+    <string name="months">mo</string>
+    <string name="years">yr</string>
+    <string name="clear_cache">Clear Cache</string>
+    <string name="clear_cache_toast">Cache Cleared</string>
+    <string name="new_comments">New comments!</string>
+    <string name="new_comments_in">There are new comments in image \"%s\"</string>
+</resources>
