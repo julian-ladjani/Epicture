@@ -32,7 +32,12 @@ class SecretUtils {
                     accountId,
                     accountUsername
             )
-
+        fun Logout(context: Context) {
+            val prefs = context.getSharedPreferences("secret", Context.MODE_PRIVATE)
+            val editor = prefs.edit()
+            editor.clear()
+            editor.apply()
+        }
             return (accessToken != "") to result
         }
     }
