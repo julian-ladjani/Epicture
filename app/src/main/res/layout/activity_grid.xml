@@ -8,14 +8,40 @@
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/grid_view_images"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:numColumns="auto_fit"
-        android:columnWidth="90dp"
-        android:horizontalSpacing="10dp"
-        android:verticalSpacing="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:gravity="center"
-        android:stretchMode="columnWidth" >
+        android:numColumns="3"
+        android:paddingTop="60dp"
+        android:stretchMode="columnWidth"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintStart_toEndOf="@+id/floating_search_view"
+        app:layout_constraintTop_toBottomOf="@+id/floating_search_view">
 
     </GridView>
+
+    <com.arlib.floatingsearchview.FloatingSearchView
+        android:id="@+id/floating_search_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:floatingSearch_backgroundColor="#787878"
+        app:floatingSearch_clearBtnColor="#e9e9e9"
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"
+        app:floatingSearch_dividerColor="#BEBEBE"
+        app:floatingSearch_hintTextColor="#e9e9e9"
+        app:floatingSearch_leftActionColor="#e9e9e9"
+        app:floatingSearch_leftActionMode="showSearch"
+        app:floatingSearch_menuItemIconColor="#e9e9e9"
+        app:floatingSearch_searchHint="Search..."
+        app:floatingSearch_showSearchKey="false"
+        app:floatingSearch_suggestionRightIconColor="#e9e9e9"
+        app:floatingSearch_suggestionsListAnimDuration="250"
+        app:floatingSearch_viewSearchInputTextColor="#e9e9e9"
+        app:floatingSearch_viewSuggestionItemTextColor="#e9e9e9"
+        app:floatingSearch_viewTextColor="#e9e9e9" />
+
 </android.support.constraint.ConstraintLayout>
