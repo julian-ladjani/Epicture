@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Epicture</string>
     <string name="authenticate">Authenticate</string>
+    <string name="authenticate_button">Button for connection with imgur</string>
     <string name="title_activity_authentication">AuthenticationActivity</string>
     <string name="please_sign_in">Please sign in through Imgur</string>
     <string name="subreddit_act" translatable="false">&#xf281;</string>
