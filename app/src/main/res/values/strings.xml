@@ -60,4 +60,8 @@
     <string name="clear_cache_toast">Cache Cleared</string>
     <string name="new_comments">New comments!</string>
     <string name="new_comments_in">There are new comments in image \"%s\"</string>
+    <string name="logout_menu_title">Logout</string>
+    <string name="settings_menu_title">Settings</string>
+    <string name="reload_menu_title">Reload</string>
+    <string name="record_menu_title">Record</string>
 </resources>
