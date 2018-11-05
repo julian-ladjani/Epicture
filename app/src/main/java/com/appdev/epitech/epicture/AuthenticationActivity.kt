@@ -1,12 +1,11 @@
 package com.appdev.epitech.epicture
 
-import android.app.Activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.appdev.epitech.epicture.api.ImgurApi
 import kotlinx.android.synthetic.main.activity_authentication.*
 
-class AuthenticationActivity : Activity() {
+class AuthenticationActivity : AppCompatActivity() {
     val OAUTH_LINK = "https://api.imgur.com/oauth2/authorize?client_id=${ImgurApi.clientId}&response_type=token"
 
     override fun onCreate(savedInstanceState: Bundle?) {

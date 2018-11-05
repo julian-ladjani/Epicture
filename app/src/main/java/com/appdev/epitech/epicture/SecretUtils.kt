@@ -18,7 +18,7 @@ class SecretUtils {
             editor.apply()
         }
 
-        fun getSecrets(context: Context): Pair<Boolean, OauthResult> {
+            fun getSecrets(context: Context): Pair<Boolean, OauthResult> {
             val prefs = context.getSharedPreferences("secret", Context.MODE_PRIVATE)
             val accessToken = prefs.getString("accessToken", "")
             val refreshToken = prefs.getString("refreshToken", "")
@@ -32,13 +32,13 @@ class SecretUtils {
                     accountId,
                     accountUsername
             )
-        fun Logout(context: Context) {
-            val prefs = context.getSharedPreferences("secret", Context.MODE_PRIVATE)
-            val editor = prefs.edit()
+            return (accessToken != "") to result
+        }
+        fun deleteSecret(context: Context) {
+            val preferences = context.getSharedPreferences("secret", Context.MODE_PRIVATE)
+            val editor = preferences.edit()
             editor.clear()
             editor.apply()
-        }
-            return (accessToken != "") to result
         }
     }
 }
