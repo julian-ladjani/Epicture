@@ -4,30 +4,43 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.appdev.epitech.epicture.adapters.ImageGridAdapter
 import com.google.android.material.navigation.NavigationView
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.activity_grid.*
-import kotlinx.android.synthetic.main.searchbar.view.*
-import androidx.cardview.widget.CardView
 import android.view.MotionEvent
+import android.view.View
+import com.appdev.epitech.epicture.adapters.SearchBarSuggestionAdapter
+import com.mancj.materialsearchbar.adapter.SuggestionsAdapter
+import android.animation.ValueAnimator
+import android.widget.RelativeLayout
+
 
 
 class GridActivity : AppCompatActivity(),
-        NavigationView.OnNavigationItemSelectedListener, MaterialSearchBar.OnSearchActionListener {
+        NavigationView.OnNavigationItemSelectedListener, MaterialSearchBar.OnSearchActionListener,
+        SuggestionsAdapter.OnItemViewClickListener {
 
     var searchBar: MaterialSearchBar? = null
+    var suggestionAdapter: SearchBarSuggestionAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_grid)
+        suggestionAdapter = SearchBarSuggestionAdapter(layoutInflater)
         searchBar = grid_search_bar
         searchBar!!.setOnSearchActionListener(this)
+        searchBar!!.setCustomSuggestionAdapter(suggestionAdapter)
+        suggestionAdapter!!.setListener(this)
         searchBar!!.setNavIcon(R.drawable.ic_back_to_search,
                 R.drawable.animated_search_to_back,
                 R.drawable.animated_back_to_search)
         grid_view_images.adapter = ImageGridAdapter(this)
+        grid_pull_to_refresh.setOnRefreshListener { onRefresh() }
+    }
+
+    private fun onRefresh() {
+        //grid_pull_to_refresh.isRefreshing = false
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
@@ -35,12 +48,6 @@ class GridActivity : AppCompatActivity(),
     }
 
     override fun onSearchStateChanged(enabled: Boolean) {
-        if (searchBar!!.lastSuggestions.size > 0) {
-            val lastSuggestion =
-                    searchBar!!.lastSuggestions[0] as CharSequence
-            if (lastSuggestion.isEmpty() || lastSuggestion.isBlank())
-                searchBar!!.lastSuggestions.removeAt(0)
-        }
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
@@ -75,9 +82,45 @@ class GridActivity : AppCompatActivity(),
         if (text.isNullOrEmpty() || text!!.isBlank()) {
             searchBar!!.setPlaceHolder("Search...")
         } else {
+            suggestionAdapter!!.addSuggestion(text.toString())
             searchBar!!.setPlaceHolder(text)
         }
         searchBar!!.clearFocus()
         searchBar!!.disableSearch()
+    }
+
+    override fun OnItemDeleteListener(position: Int, v: View?) {
+        if (v!!.tag is String) {
+            animateSuggestions(getListHeight(false).toInt(),
+                    getListHeight(true).toInt())
+            suggestionAdapter!!.deleteSuggestion(position, v.tag as String)
+        }
+    }
+
+    private fun getListHeight(isSubtraction: Boolean): Float {
+        val destiny = resources.displayMetrics.density
+        return if (!isSubtraction) suggestionAdapter!!.listHeight * destiny
+        else (suggestionAdapter!!.itemCount - 1) * suggestionAdapter!!.singleViewHeight * destiny
+    }
+
+    private fun animateSuggestions(from: Int, to: Int) {
+        val last = findViewById<View>(R.id.last) as RelativeLayout
+        val lp = last.layoutParams
+        if (to == 0 && lp.height == 0)
+            return
+        val animator = ValueAnimator.ofInt(from, to)
+        animator.duration = 200
+        animator.addUpdateListener { animation ->
+            lp.height = animation.animatedValue as Int
+            last.layoutParams = lp
+        }
+        if (suggestionAdapter!!.itemCount > 0)
+            animator.start()
+    }
+
+    override fun OnItemClickListener(position: Int, v: View?) {
+        if (v!!.tag is String) {
+            searchBar!!.text = (v.tag as String)
+        }
     }
 }
