@@ -1,8 +1,8 @@
 package com.appdev.epitech.epicture
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,10 +13,10 @@ class MainActivity : AppCompatActivity() {
         val (isLoggedIn, _) = SecretUtils.getSecrets(this)
 
         val intent = if (isLoggedIn) {
-            Intent(this@MainActivity, GridActivity::class.java)
+            Intent(this, GridActivity::class.java)
 
         } else {
-            Intent(this@MainActivity, NoAuthActivity::class.java)
+            Intent(this, NoAuthActivity::class.java)
         }
 
         startActivity(intent)
