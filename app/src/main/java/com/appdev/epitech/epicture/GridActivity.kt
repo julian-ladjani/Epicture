@@ -14,7 +14,8 @@ import com.appdev.epitech.epicture.adapters.SearchBarSuggestionAdapter
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter
 import android.animation.ValueAnimator
 import android.widget.RelativeLayout
-
+import com.appdev.epitech.epicture.R.menu.menu_search_view
+import com.appdev.epitech.epicture.entities.ImgurImage
 
 
 class GridActivity : AppCompatActivity(),
@@ -23,6 +24,22 @@ class GridActivity : AppCompatActivity(),
 
     var searchBar: MaterialSearchBar? = null
     var suggestionAdapter: SearchBarSuggestionAdapter? = null
+    var images = mutableListOf(
+            ImgurImage(thumbnailLink = "http://i.imgur.com/rFLNqWIb.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/C9pBVt7b.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/rT5vXE1b.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/aIy5R2kb.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/MoJs9pTb.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/S963yEMb.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/rLR2cycb.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/SEPdUIxb.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/aC9OjaMb.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/76Jfv9bb.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/fUX7EIBb.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/syELajxb.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/COzBnrub.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/Z3QjilAb.jpg"))
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +48,12 @@ class GridActivity : AppCompatActivity(),
         searchBar = grid_search_bar
         searchBar!!.setOnSearchActionListener(this)
         searchBar!!.setCustomSuggestionAdapter(suggestionAdapter)
+        searchBar!!.inflateMenu(menu_search_view)
         suggestionAdapter!!.setListener(this)
         searchBar!!.setNavIcon(R.drawable.ic_back_to_search,
                 R.drawable.animated_search_to_back,
                 R.drawable.animated_back_to_search)
-        grid_view_images.adapter = ImageGridAdapter(this)
+        grid_view_images.adapter = ImageGridAdapter(this, images)
         grid_pull_to_refresh.setOnRefreshListener { onRefresh() }
     }
 
@@ -48,6 +66,7 @@ class GridActivity : AppCompatActivity(),
     }
 
     override fun onSearchStateChanged(enabled: Boolean) {
+
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

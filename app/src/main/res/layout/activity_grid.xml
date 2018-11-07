@@ -20,11 +20,29 @@
         app:mt_placeholder="Search..."
         app:mt_speechMode="true" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="32dp"
+        android:adjustViewBounds="false"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="visible"
+        app:backgroundTint="@color/design_default_color_primary_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@android:drawable/stat_sys_upload" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/grid_pull_to_refresh"
         android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@+id/grid_search_bar"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/grid_search_bar">
+
         <GridView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/grid_view_images"
             android:layout_width="match_parent"
@@ -37,6 +55,7 @@
             android:layout_marginRight="8dp"
             android:gravity="center"
             android:numColumns="3"
+            android:paddingTop="2dp"
             android:stretchMode="columnWidth"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

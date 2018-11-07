@@ -11,6 +11,7 @@ k.DS_Store
 /android-studio/sdk
 out/
 /tmp
+local.properties
 workspace.xml
 *.versionsBackup
 /idea/testData/debugger/tinyApp/classes*
@@ -39,4 +40,3 @@ build/
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/.name
 .idea/caches/build_file_checksums.ser
-local.properties

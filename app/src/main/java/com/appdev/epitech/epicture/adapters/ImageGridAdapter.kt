@@ -10,16 +10,16 @@ import android.widget.ImageView
 import com.appdev.epitech.epicture.R
 import com.bumptech.glide.Glide
 import android.util.DisplayMetrics
+import android.text.method.TextKeyListener.clear
+import com.appdev.epitech.epicture.entities.ImgurImage
 
 
-var imageUrls = arrayOf("http://i.imgur.com/rFLNqWIb.jpg", "http://i.imgur.com/C9pBVt7b.jpg", "http://i.imgur.com/rT5vXE1b.jpg", "http://i.imgur.com/aIy5R2kb.jpg", "http://i.imgur.com/MoJs9pTb.jpg", "http://i.imgur.com/S963yEMb.jpg", "http://i.imgur.com/rLR2cycb.jpg", "http://i.imgur.com/SEPdUIxb.jpg", "http://i.imgur.com/aC9OjaMb.jpg", "http://i.imgur.com/76Jfv9bb.jpg", "http://i.imgur.com/fUX7EIBb.jpg", "http://i.imgur.com/syELajxb.jpg", "http://i.imgur.com/COzBnrub.jpg", "http://i.imgur.com/Z3QjilAb.jpg")
+class ImageGridAdapter(private val mContext: Context, mObjects: MutableList<ImgurImage>) :
+        BaseAdapter() {
 
+    private var images = mObjects
 
-class ImageGridAdapter(private val mContext: Context) : BaseAdapter() {
-
-    private val inflater: LayoutInflater = LayoutInflater.from(mContext)
-
-    override fun getCount(): Int = imageUrls.size
+    override fun getCount(): Int = images.size
 
     override fun getItem(position: Int): Any? = null
 
@@ -38,9 +38,17 @@ class ImageGridAdapter(private val mContext: Context) : BaseAdapter() {
         }
         Glide
                 .with(mContext)
-                .load(imageUrls[position])
+                .load(images[position].thumbnailLink)
                 .into(myImageView)
 
         return myImageView
+    }
+
+    fun clearAdapter() {
+        images.clear()
+    }
+
+    fun setNewValues(mObjects: MutableList<ImgurImage>) {
+        this.images = mObjects
     }
 }
