@@ -17,12 +17,10 @@ import android.widget.RelativeLayout
 import com.appdev.epitech.epicture.R.menu.menu_search_view
 import com.appdev.epitech.epicture.entities.ImgurImage
 import android.content.Intent
-import android.util.Log
 import android.widget.AdapterView
 import androidx.appcompat.widget.PopupMenu
-import android.widget.Toast
 import android.widget.AdapterView.OnItemClickListener
-import java.util.Collections.addAll
+import com.appdev.epitech.epicture.entities.Image
 
 
 class GridActivity : AppCompatActivity(),
@@ -82,6 +80,12 @@ class GridActivity : AppCompatActivity(),
 
     }
 
+    private fun imageClickAction(parent: AdapterView<*>, v: View, position: Int, id: Long) {
+        val i = Intent(this, ImageActivity::class.java)
+        i.putExtra("image", images[position])
+        startActivity(i)
+    }
+
     private fun createUploadButton() {
         grid_upload_button.setOnClickListener { View.OnClickListener(this::uploadAction) }
     }
@@ -104,7 +108,9 @@ class GridActivity : AppCompatActivity(),
         gridAdapter = ImageGridAdapter(this,
                 mutableListOf<ImgurImage>().apply { addAll(images) })
         grid_view_images.adapter = gridAdapter
-        grid_view_images.onItemClickListener = OnItemClickListener { parent, v, position, id -> Log.d("Grid", "click on image") }
+        grid_view_images.onItemClickListener = OnItemClickListener { parent, v, position, id ->
+            imageClickAction(parent, v, position, id)
+        }
         grid_pull_to_refresh.setOnRefreshListener { onRefresh() }
     }
 

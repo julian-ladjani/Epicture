@@ -1,5 +1,9 @@
 package com.appdev.epitech.epicture.entities
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class ImgurImage(
         val id: String = "id",
         val title: String = "id",
@@ -19,4 +23,4 @@ data class ImgurImage(
         val vote: String = "",
         val in_gallery: Boolean = false,
         val thumbnailLink: String = ""
-)
+) : Parcelable

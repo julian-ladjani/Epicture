@@ -25,6 +25,7 @@
         <activity android:name=".NoAuthActivity" />
         <activity android:name=".AuthenticationActivity" />
         <activity android:name=".GridActivity" />
+        <activity android:name=".ImageActivity" />
     </application>
 
 </manifest>
