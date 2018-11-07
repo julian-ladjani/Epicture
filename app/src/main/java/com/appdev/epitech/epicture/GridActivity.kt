@@ -20,7 +20,11 @@ import android.content.Intent
 import android.widget.AdapterView
 import androidx.appcompat.widget.PopupMenu
 import android.widget.AdapterView.OnItemClickListener
+import com.appdev.epitech.epicture.api.ImgurApi
 import com.appdev.epitech.epicture.entities.Image
+import kotlinx.coroutines.CommonPool
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 
 class GridActivity : AppCompatActivity(),
@@ -49,6 +53,7 @@ class GridActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_grid)
+        images = ImgurApi.getGallery(0,0,false)
         createSearchBar()
         createGrid()
         createUploadButton()
