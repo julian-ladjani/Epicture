@@ -1,25 +1,19 @@
 package com.appdev.epitech.epicture.adapters
 
 import android.content.Context
-import android.media.Image
 import android.view.ViewGroup
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import com.appdev.epitech.epicture.R
 import com.bumptech.glide.Glide
-import android.util.DisplayMetrics
-import android.text.method.TextKeyListener.clear
 import com.appdev.epitech.epicture.entities.ImgurImage
-
 
 class ImageGridAdapter(private val mContext: Context, mObjects: MutableList<ImgurImage>) :
         BaseAdapter() {
 
-    private var images = mObjects
+    private var images: MutableList<ImgurImage>? = mObjects
 
-    override fun getCount(): Int = images.size
+    override fun getCount(): Int = images!!.size
 
     override fun getItem(position: Int): Any? = null
 
@@ -38,17 +32,18 @@ class ImageGridAdapter(private val mContext: Context, mObjects: MutableList<Imgu
         }
         Glide
                 .with(mContext)
-                .load(images[position].thumbnailLink)
+                .load(images!![position].thumbnailLink)
                 .into(myImageView)
 
         return myImageView
     }
 
     fun clearAdapter() {
-        images.clear()
+        images!!.clear()
     }
 
     fun setNewValues(mObjects: MutableList<ImgurImage>) {
-        this.images = mObjects
+        images!!.addAll(mObjects)
+        notifyDataSetChanged()
     }
 }

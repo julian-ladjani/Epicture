@@ -16,15 +16,23 @@ import android.animation.ValueAnimator
 import android.widget.RelativeLayout
 import com.appdev.epitech.epicture.R.menu.menu_search_view
 import com.appdev.epitech.epicture.entities.ImgurImage
+import android.content.Intent
+import android.util.Log
+import android.widget.AdapterView
+import androidx.appcompat.widget.PopupMenu
+import android.widget.Toast
+import android.widget.AdapterView.OnItemClickListener
+import java.util.Collections.addAll
 
 
 class GridActivity : AppCompatActivity(),
         NavigationView.OnNavigationItemSelectedListener, MaterialSearchBar.OnSearchActionListener,
         SuggestionsAdapter.OnItemViewClickListener {
 
-    var searchBar: MaterialSearchBar? = null
-    var suggestionAdapter: SearchBarSuggestionAdapter? = null
-    var images = mutableListOf(
+    private var searchBar: MaterialSearchBar? = null
+    private var gridAdapter: ImageGridAdapter? = null
+    private var suggestionAdapter: SearchBarSuggestionAdapter? = null
+    private var images = mutableListOf(
             ImgurImage(thumbnailLink = "http://i.imgur.com/rFLNqWIb.jpg"),
             ImgurImage(thumbnailLink = "http://i.imgur.com/C9pBVt7b.jpg"),
             ImgurImage(thumbnailLink = "http://i.imgur.com/rT5vXE1b.jpg"),
@@ -40,25 +48,77 @@ class GridActivity : AppCompatActivity(),
             ImgurImage(thumbnailLink = "http://i.imgur.com/COzBnrub.jpg"),
             ImgurImage(thumbnailLink = "http://i.imgur.com/Z3QjilAb.jpg"))
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_grid)
+        createSearchBar()
+        createGrid()
+        createUploadButton()
+    }
+
+    private fun refreshAction() {
+        gridAdapter!!.clearAdapter()
+        gridAdapter!!.setNewValues(images)
+    }
+
+    private fun settingAction() {
+
+    }
+
+    private fun logoutAction() {
+        SecretUtils.deleteSecret(this)
+        val intent = Intent(this,
+                MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
+    }
+
+    private fun searchAction() {
+
+    }
+
+    private fun uploadAction(view: View) {
+
+    }
+
+    private fun createUploadButton() {
+        grid_upload_button.setOnClickListener { View.OnClickListener(this::uploadAction) }
+    }
+
+    private fun createSearchBar() {
         suggestionAdapter = SearchBarSuggestionAdapter(layoutInflater)
         searchBar = grid_search_bar
         searchBar!!.setOnSearchActionListener(this)
         searchBar!!.setCustomSuggestionAdapter(suggestionAdapter)
         searchBar!!.inflateMenu(menu_search_view)
+        searchBar!!.menu.setOnMenuItemClickListener(
+                PopupMenu.OnMenuItemClickListener(this::onMenuClick))
         suggestionAdapter!!.setListener(this)
         searchBar!!.setNavIcon(R.drawable.ic_back_to_search,
                 R.drawable.animated_search_to_back,
                 R.drawable.animated_back_to_search)
-        grid_view_images.adapter = ImageGridAdapter(this, images)
+    }
+
+    private fun createGrid() {
+        gridAdapter = ImageGridAdapter(this,
+                mutableListOf<ImgurImage>().apply { addAll(images) })
+        grid_view_images.adapter = gridAdapter
+        grid_view_images.onItemClickListener = OnItemClickListener { parent, v, position, id -> Log.d("Grid", "click on image") }
         grid_pull_to_refresh.setOnRefreshListener { onRefresh() }
     }
 
+    private fun onMenuClick(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_logout -> logoutAction()
+            R.id.action_settings -> settingAction()
+        }
+        return false
+    }
+
     private fun onRefresh() {
-        //grid_pull_to_refresh.isRefreshing = false
+        refreshAction()
+        grid_pull_to_refresh.isRefreshing = false
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
@@ -106,6 +166,7 @@ class GridActivity : AppCompatActivity(),
         }
         searchBar!!.clearFocus()
         searchBar!!.disableSearch()
+        searchAction()
     }
 
     override fun OnItemDeleteListener(position: Int, v: View?) {

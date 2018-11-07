@@ -21,7 +21,7 @@
         app:mt_speechMode="true" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/grid_upload_button"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="56dp"
         android:layout_height="56dp"
