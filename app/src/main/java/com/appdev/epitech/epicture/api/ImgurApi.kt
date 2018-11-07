@@ -5,6 +5,11 @@ import android.util.Base64
 import com.google.gson.Gson
 import com.appdev.epitech.epicture.SecretUtils
 import com.appdev.epitech.epicture.entities.*
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.android.core.Json
+import com.github.kittinunf.fuel.core.FuelManager
+import com.github.kittinunf.fuel.httpGet
+import com.google.gson.JsonObject
 import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.ResponseBody
@@ -14,6 +19,7 @@ class ImgurApi {
     companion object {
         val clientId = "7333a4b592aab44"
         val thumbnailMode = "m"
+
 
         private fun getJsonData(jsonResponse: String): String {
             val responseObject = JSONObject(jsonResponse)
@@ -26,19 +32,30 @@ class ImgurApi {
         }
 
         fun getSelfAccount(accessToken: String): Account {
-            val request = HttpUtils.createRequest("https://api.imgur.com/3/account/me", mapOf("Authorization" to "Bearer $accessToken"))
-            val response = HttpUtils.sendRequest(request)
-            val body = response.body()!!
-            val jsonResponse = body.string()
-            val gson = Gson()
-            val imgurJson = getJsonData(jsonResponse)
-            val imgurAccount = gson.fromJson(imgurJson, ImgurAccount::class.java)
-            return Account(
-                    imgurAccount.url,
-                    if (imgurAccount.bio == null) { "" } else { imgurAccount.bio },
-                    imgurAccount.created,
-                    imgurAccount.reputation
-            )
+            var account = Account("null","null",0,0.0)
+            "/3/account/me".httpGet().responseString { request, response, result ->
+                //make a GET to https://httpbin.org/get and do something with response
+                val (data, error) = result
+                if (error != null) {
+                    println(error)
+                }
+                else {
+                    val gson = Gson()
+                    val imgurJson = getJsonData(data.toString())
+                    var imgurAccount = gson.fromJson(imgurJson, ImgurAccount::class.java)
+                    var bioAccount = ""
+
+                    if (imgurAccount != null) {
+                        bioAccount = imgurAccount.bio
+                    }
+                    account = Account(imgurAccount.url,
+                            bioAccount,
+                            imgurAccount.created,
+                            imgurAccount.reputation
+                    )
+                }
+            }
+            return account
         }
 
         fun getImageFile(id: String): ByteArray {
@@ -84,32 +101,37 @@ class ImgurApi {
                 else -> ""
             }
 
-            var url = "https://api.imgur.com/3/gallery/$sectionParam/$sortParam/"
+            var url = "/gallery/$sectionParam/$sortParam/"
             if (!timeWindow.equals("")) {
                 url += "$timeWindow/"
             }
 
             url += "?mature=$nsfwEnabled&album_previews=true"
-
-            val request = HttpUtils.createRequest(url, mapOf("Authorization" to "Client-ID ${clientId}"))
-            val response = HttpUtils.sendRequest(request)
-            val body = response.body()!!
-            val jsonResponse = body.string()
-            val imgurJson = getJsonData(jsonResponse)
-            val gson = Gson()
-            val gallery = gson.fromJson(imgurJson, Array<ImgurGalleryAlbum>::class.java)
-            val galleryImages = gallery
-                    .filter { if (it.is_album) { it.cover != null } else { true } }
-                    .map {
-                 Image (
-                         if (it.is_album) { it.cover } else { it.id },
-                         if (it.title != null) { it.title } else { "" },
-                         if (it.account_url != null) { it.account_url } else { "" },
-                         it.points,
-                         it.datetime,
-                         if (it.is_album) { it.id } else { "" },
-                         it.is_album
-                 )
+            println("URL:$url")
+            url.httpGet().responseString { request, response, result ->
+                //make a GET to https://httpbin.org/get and do something with response
+                val (data, error) = result
+                if (error != null)
+                    println("ERROR $error")
+                else {
+                    val gson = Gson()
+                    println("DATA $data")
+                    val imgurJson = getJsonData(data.toString())
+                    //var gallery = gson.fromJson(imgurJson, Array<ImgurGalleryAlbum>::class.java)
+                    //var list = mutableListOf(gallery.images)
+                    /*val galleryImages = gallery
+                        .filter { if (it.is_album) { it.cover != null } else { true } }
+                        .map {
+                            ImgurImage (
+                                    if (it.is_album) { it.cover } else { it.id },
+                                    if (it.title != null) { it.title } else { "" },
+                                    if (it.account_url != null) { it.account_url } else { "" },
+                                    it.datetime,
+                                    if (it.is_album) { it.id } else { "" },
+                                    it.is_album
+                            )
+                        }*/
+                }
             }
 
             // Do you know why that filter is there? Let me tell you. It's because imgur api is a shameless liar.
@@ -117,7 +139,7 @@ class ImgurApi {
             // Because of that, if we want null safety, we need to get rid of albums without a cover image
             // And that folks is why you don't blindly trust API documentation.
 
-            return galleryImages.toTypedArray()
+            return arrayOf<Image>()
         }
 
         fun getSubredditGallery(subreddit: String): Array<SubredditImage> {
