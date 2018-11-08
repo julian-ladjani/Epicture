@@ -21,10 +21,6 @@ import android.widget.AdapterView
 import androidx.appcompat.widget.PopupMenu
 import android.widget.AdapterView.OnItemClickListener
 import com.appdev.epitech.epicture.api.ImgurApi
-import com.appdev.epitech.epicture.entities.Image
-import kotlinx.coroutines.CommonPool
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 
 class GridActivity : AppCompatActivity(),

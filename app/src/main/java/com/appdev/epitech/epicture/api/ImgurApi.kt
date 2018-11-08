@@ -3,10 +3,9 @@ package com.appdev.epitech.epicture.api
 import android.content.Context
 import android.provider.Contacts
 import android.util.Base64
-import co.metalab.asyncawait.async
-import com.appdev.epitech.epicture.MainActivity
 import com.google.gson.Gson
 import com.appdev.epitech.epicture.SecretUtils
+import com.appdev.epitech.epicture.data.ConvertData
 import com.appdev.epitech.epicture.entities.*
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.android.core.Json
@@ -14,6 +13,7 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.JsonObject
 import kotlinx.coroutines.launch
+import okhttp3.Headers
 import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.ResponseBody
@@ -22,7 +22,7 @@ import org.json.JSONObject
 class ImgurApi {
     companion object {
         val clientId = "7333a4b592aab44"
-        val thumbnailMode = "m"
+        val thumbnailMode = "b"
 
         private fun getJsonData(jsonResponse: String): String {
             val responseObject = JSONObject(jsonResponse)
@@ -45,19 +45,7 @@ class ImgurApi {
                     println(error)
                 }
                 else {
-                    val gson = Gson()
-                    val imgurJson = getJsonData(data.toString())
-                    var imgurAccount = gson.fromJson(imgurJson, ImgurAccount::class.java)
-                    var bioAccount = ""
-
-                    if (imgurAccount != null) {
-                        bioAccount = imgurAccount.bio
-                    }
-                    account = Account(imgurAccount.url,
-                            bioAccount,
-                            imgurAccount.created,
-                            imgurAccount.reputation
-                    )
+                    account = ConvertData.stringtoAccount(data)
                 }
             }
             return account
@@ -65,16 +53,6 @@ class ImgurApi {
 
         fun getImageFile(id: String): ByteArray {
             val request = HttpUtils.createRequest("https://i.imgur.com/$id.jpg", mapOf())
-            val response = HttpUtils.sendRequest(request)
-            val body = response.body()
-            return when (body) {
-                is ResponseBody -> body.bytes()
-                else -> byteArrayOf() // body is null
-            }
-        }
-
-        fun getThumbnailFile(id: String): ByteArray {
-            val request = HttpUtils.createRequest("https://i.imgur.com/$id${thumbnailMode}.jpg", mapOf())
             val response = HttpUtils.sendRequest(request)
             val body = response.body()
             return when (body) {
@@ -122,57 +100,9 @@ class ImgurApi {
                 if (error != null)
                     println("ERROR $error")
                 else {
-                    val gson = Gson()
-                    val imgurGallery = getJsonData(data.toString())
-                    var gallery = gson.fromJson(imgurGallery, Array<ImgurGalleryAlbum>::class.java)
-                    for (album in gallery) {
-                        if (album.images_count != 0)
-                            for (image in album.images) {
-                                var title = ""
-                                if (image.title == null) {
-                                    title = album.title
-                                } else {
-                                    title = image.title
-                                }
-                                var description = ""
-                                if (image.description != null) {
-                                    description = image.description
-                                }
-                                var thumbnailLink = image.link
-                                if (image.link!!.substringAfterLast(".") != "gif")
-                                    thumbnailLink = image.link!!.substring(0, (image.link!!.length)-4) + "b." + image.link!!.substringAfterLast(".")
-                                println(thumbnailLink)
-                                var imgurImage = ImgurImage(
-                                        image.id,
-                                        title,
-                                        description,
-                                        image.datetime,
-                                        image.type,
-                                        image.animated,
-                                        image.width,
-                                        image.height,
-                                        image.size,
-                                        image.views,
-                                        image.bandwidth,
-                                        image.section,
-                                        image.link,
-                                        image.favorite,
-                                        image.nsfw,
-                                        image.vote,
-                                        image.in_gallery,
-                                        thumbnailLink
-
-                                )
-                                images.add(imgurImage)
-                            }
-                    }
+                    images = ConvertData.galleryToMutatableListImgurImage(data)
                 }
             }
-
-            // Do you know why that filter is there? Let me tell you. It's because imgur api is a shameless liar.
-            // So, appearently sometimes gallery items don't have a cover image despite them being an album
-            // Because of that, if we want null safety, we need to get rid of albums without a cover image
-            // And that folks is why you don't blindly trust API documentation.
             return images
         }
 
@@ -242,7 +172,7 @@ class ImgurApi {
             return imgurObject.optString("link", "N/A")
         }
 
-        fun getSearch(search: String, sort: Int): Array<Image> {
+        fun getSearch(search: String, sort: Int): MutableList<ImgurImage> {
             val sortParam = when (sort) {
                 0 -> "viral"
                 1 -> "time"
@@ -258,35 +188,24 @@ class ImgurApi {
                 else -> ""
             }
 
-            var url = "https://api.imgur.com/3/gallery/search/$sortParam/"
+            var url = "gallery/search/$sortParam/"
             if (!timeWindow.equals("")) {
                 url += timeWindow
             }
 
             url += "?q=$search"
-
-            val request = HttpUtils.createRequest(url, mapOf("Authorization" to "Client-ID ${clientId}"))
-            val response = HttpUtils.sendRequest(request)
-            val body = response.body()!!
-            val jsonResponse = body.string()
-            val imgurJson = getJsonData(jsonResponse)
-            val gson = Gson()
-            val gallery = gson.fromJson(imgurJson, Array<ImgurGalleryAlbum>::class.java)
-            val galleryImages = gallery
-                    .filter { if (it.is_album) { it.cover != null } else { true } }
-                    .map {
-                        Image (
-                                if (it.is_album) { it.cover } else { it.id },
-                                if (it.title != null) { it.title } else { "" },
-                                if (it.account_url != null) { it.account_url } else { "" },
-                                it.points,
-                                it.datetime,
-                                if (it.is_album) { it.id } else { "" },
-                                it.is_album
-                        )
+            var images = mutableListOf<ImgurImage>()
+            url.httpGet()
+                    .responseString { request, response, result ->
+                        //make a GET to https://httpbin.org/get and do something with response
+                        val (data, error) = result
+                        if (error != null)
+                            println("ERROR $error")
+                        else {
+                            images = ConvertData.galleryToMutatableListImgurImage(data)
+                        }
                     }
-
-            return galleryImages.toTypedArray()
+            return images
         }
 
         fun getMetadataFromId(id: String, context: Context): Image {
