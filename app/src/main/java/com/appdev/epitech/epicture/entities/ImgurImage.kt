@@ -14,13 +14,13 @@ data class ImgurImage(
         val width: Int = 0,
         val height: Int = 0,
         val size: Int = 0,
-        val views: Int = 0,
+        val views: String? = null,
         val bandwidth: Long = 0,
-        val section: String = "",
-        val link: String = "",
+        val section: String? = "",
+        val link: String? = "",
         val favorite: Boolean = false,
-        val nsfw: Boolean = false,
-        val vote: String = "",
+        val nsfw: String? = null,
+        val vote: String? = "",
         val in_gallery: Boolean = false,
-        val thumbnailLink: String = ""
+        val thumbnailLink: String? = ""
 ) : Parcelable

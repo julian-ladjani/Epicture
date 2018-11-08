@@ -1,7 +1,10 @@
 package com.appdev.epitech.epicture.api
 
 import android.content.Context
+import android.provider.Contacts
 import android.util.Base64
+import co.metalab.asyncawait.async
+import com.appdev.epitech.epicture.MainActivity
 import com.google.gson.Gson
 import com.appdev.epitech.epicture.SecretUtils
 import com.appdev.epitech.epicture.entities.*
@@ -10,6 +13,7 @@ import com.github.kittinunf.fuel.android.core.Json
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.JsonObject
+import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.ResponseBody
@@ -19,7 +23,6 @@ class ImgurApi {
     companion object {
         val clientId = "7333a4b592aab44"
         val thumbnailMode = "m"
-
 
         private fun getJsonData(jsonResponse: String): String {
             val responseObject = JSONObject(jsonResponse)
@@ -31,7 +34,9 @@ class ImgurApi {
             }
         }
 
-        fun getSelfAccount(accessToken: String): Account {
+        fun getSelfAccount(context:Context): Account {
+            val (isFull,result) = SecretUtils.getSecrets(context)
+            FuelManager.instance.baseHeaders = mapOf("Authorization" to "Bearer ${result.accessToken}")
             var account = Account("null","null",0,0.0)
             "/3/account/me".httpGet().responseString { request, response, result ->
                 //make a GET to https://httpbin.org/get and do something with response
@@ -78,7 +83,8 @@ class ImgurApi {
             }
         }
 
-        fun getGallery(section: Int, sort: Int, nsfwEnabled: Boolean): Array<Image> {
+        fun getGallery(section: Int, sort: Int, nsfwEnabled: Boolean): MutableList<ImgurImage> {
+            FuelManager.instance.baseHeaders = mapOf("Authorization" to "Client-ID $clientId")
             val sectionParam = when(section) {
                 0 -> "hot"
                 1 -> "top"
@@ -108,29 +114,58 @@ class ImgurApi {
 
             url += "?mature=$nsfwEnabled&album_previews=true"
             println("URL:$url")
-            url.httpGet().responseString { request, response, result ->
+            var images = mutableListOf<ImgurImage>()
+            url.httpGet()
+                    .responseString { request, response, result ->
                 //make a GET to https://httpbin.org/get and do something with response
                 val (data, error) = result
                 if (error != null)
                     println("ERROR $error")
                 else {
                     val gson = Gson()
-                    println("DATA $data")
-                    val imgurJson = getJsonData(data.toString())
-                    //var gallery = gson.fromJson(imgurJson, Array<ImgurGalleryAlbum>::class.java)
-                    //var list = mutableListOf(gallery.images)
-                    /*val galleryImages = gallery
-                        .filter { if (it.is_album) { it.cover != null } else { true } }
-                        .map {
-                            ImgurImage (
-                                    if (it.is_album) { it.cover } else { it.id },
-                                    if (it.title != null) { it.title } else { "" },
-                                    if (it.account_url != null) { it.account_url } else { "" },
-                                    it.datetime,
-                                    if (it.is_album) { it.id } else { "" },
-                                    it.is_album
-                            )
-                        }*/
+                    val imgurGallery = getJsonData(data.toString())
+                    var gallery = gson.fromJson(imgurGallery, Array<ImgurGalleryAlbum>::class.java)
+                    for (album in gallery) {
+                        if (album.images_count != 0)
+                            for (image in album.images) {
+                                var title = ""
+                                if (image.title == null) {
+                                    title = album.title
+                                } else {
+                                    title = image.title
+                                }
+                                var description = ""
+                                if (image.description != null) {
+                                    description = image.description
+                                }
+                                var thumbnailLink = image.link
+                                if (image.link!!.substringAfterLast(".") != "gif")
+                                    thumbnailLink = image.link!!.substring(0, (image.link!!.length)-4) + "b." + image.link!!.substringAfterLast(".")
+                                println(thumbnailLink)
+                                var imgurImage = ImgurImage(
+                                        image.id,
+                                        title,
+                                        description,
+                                        image.datetime,
+                                        image.type,
+                                        image.animated,
+                                        image.width,
+                                        image.height,
+                                        image.size,
+                                        image.views,
+                                        image.bandwidth,
+                                        image.section,
+                                        image.link,
+                                        image.favorite,
+                                        image.nsfw,
+                                        image.vote,
+                                        image.in_gallery,
+                                        thumbnailLink
+
+                                )
+                                images.add(imgurImage)
+                            }
+                    }
                 }
             }
 
@@ -138,8 +173,7 @@ class ImgurApi {
             // So, appearently sometimes gallery items don't have a cover image despite them being an album
             // Because of that, if we want null safety, we need to get rid of albums without a cover image
             // And that folks is why you don't blindly trust API documentation.
-
-            return arrayOf<Image>()
+            return images
         }
 
         fun getSubredditGallery(subreddit: String): Array<SubredditImage> {
