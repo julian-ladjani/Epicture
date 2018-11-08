@@ -17,7 +17,7 @@ class ImageActivity : AppCompatActivity() {
         image = intent.getParcelableExtra("image")
         Glide
                 .with(this)
-                .load(image!!.thumbnailLink)
+                .load(image!!.link)
                 .into(photo_view)
     }
 }

@@ -31,20 +31,20 @@ class GridActivity : AppCompatActivity(),
     private var gridAdapter: ImageGridAdapter? = null
     private var suggestionAdapter: SearchBarSuggestionAdapter? = null
     private var images = mutableListOf(
-            ImgurImage(thumbnailLink = "http://i.imgur.com/rFLNqWIb.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/C9pBVt7b.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/rT5vXE1b.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/aIy5R2kb.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/MoJs9pTb.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/S963yEMb.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/rLR2cycb.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/SEPdUIxb.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/aC9OjaMb.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/76Jfv9bb.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/fUX7EIBb.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/syELajxb.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/COzBnrub.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/Z3QjilAb.jpg"))
+            ImgurImage(thumbnailLink = "http://i.imgur.com/rFLNqWIb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/C9pBVt7b.jpg", link = "http://i.imgur.com/C9pBVt7.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/rT5vXE1b.jpg", link = "http://i.imgur.com/rT5vXE1.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/aIy5R2kb.jpg", link = "http://i.imgur.com/aIy5R2k.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/MoJs9pTb.jpg", link = "http://i.imgur.com/MoJs9pT.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/S963yEMb.jpg", link = "http://i.imgur.com/S963yEM.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/rLR2cycb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/SEPdUIxb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/aC9OjaMb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/76Jfv9bb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/fUX7EIBb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/syELajxb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/COzBnrub.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
+            ImgurImage(thumbnailLink = "http://i.imgur.com/Z3QjilAb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
