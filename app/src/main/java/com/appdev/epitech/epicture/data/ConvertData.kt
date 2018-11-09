@@ -36,11 +36,10 @@ class ConvertData {
                     imgurAccount.reputation
             )
         }
-        fun galleryToMutatableListImgurImage(data: String?): MutableList<ImgurImage> {
+        fun galleryToMutatableListImgurImage(data: String?, listImage: MutableList<ImgurImage>): MutableList<ImgurImage> {
             val gson = Gson()
             val imgurGallery = getJsonData(data.toString())
             val gallery = gson.fromJson(imgurGallery, Array<ImgurGalleryAlbum>::class.java)
-            val listImage = mutableListOf<ImgurImage>()
             for (album in gallery) {
                 if (album.images_count != 0)
                     for (image in album.images) {
@@ -57,8 +56,7 @@ class ConvertData {
                         var thumbnailLink = image.link
                         if (image.link!!.substringAfterLast(".") != "gif")
                             thumbnailLink = image.link!!.substring(0, (image.link.length) - 4) + "${thumbnailMode}." + image.link.substringAfterLast(".")
-                        println(thumbnailLink)
-                        var imgurImage = ImgurImage(
+                        val imgurImage = ImgurImage(
                                 image.id,
                                 title,
                                 description,

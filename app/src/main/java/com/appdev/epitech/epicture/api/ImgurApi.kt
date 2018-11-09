@@ -92,7 +92,7 @@ class ImgurApi {
 
             url += "?mature=$nsfwEnabled&album_previews=true"
             println("URL:$url")
-            var images = mutableListOf<ImgurImage>()
+            var listImage = mutableListOf<ImgurImage>()
             url.httpGet()
                     .responseString { request, response, result ->
                 //make a GET to https://httpbin.org/get and do something with response
@@ -100,10 +100,10 @@ class ImgurApi {
                 if (error != null)
                     println("ERROR $error")
                 else {
-                    images = ConvertData.galleryToMutatableListImgurImage(data)
+                    listImage = ConvertData.galleryToMutatableListImgurImage(data, listImage)
                 }
             }
-            return images
+            return listImage
         }
 
         fun getSubredditGallery(subreddit: String): Array<SubredditImage> {
@@ -194,7 +194,7 @@ class ImgurApi {
             }
 
             url += "?q=$search"
-            var images = mutableListOf<ImgurImage>()
+            var listImage = mutableListOf<ImgurImage>()
             url.httpGet()
                     .responseString { request, response, result ->
                         //make a GET to https://httpbin.org/get and do something with response
@@ -202,10 +202,28 @@ class ImgurApi {
                         if (error != null)
                             println("ERROR $error")
                         else {
-                            images = ConvertData.galleryToMutatableListImgurImage(data)
+                            listImage = ConvertData.galleryToMutatableListImgurImage(data, listImage)
                         }
                     }
-            return images
+            return listImage
+        }
+
+        fun getSearchTag(tag: String): MutableList<ImgurImage> {
+            var listImage = mutableListOf<ImgurImage>()
+            "/gallery/t/$tag".httpGet()
+                    .responseString { request, response, result ->
+                        //make a GET to https://httpbin.org/get and do something with response
+                        val (data, error) = result
+                        if (error != null)
+                            println("ERROR $error")
+                        else {
+                            var imgurTag = getJsonData(data.toString())
+                            imgurTag = JSONObject(imgurTag).getJSONArray("items").toString()
+                            imgurTag = "{data:${imgurTag}, \"success\": true}"
+                            listImage = ConvertData.galleryToMutatableListImgurImage(imgurTag, listImage)
+                        }
+                    }
+            return listImage
         }
 
         fun getMetadataFromId(id: String, context: Context): Image {
