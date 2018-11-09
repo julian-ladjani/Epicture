@@ -61,7 +61,9 @@ class GridActivity : AppCompatActivity(),
     }
 
     private fun settingAction() {
-
+        val intent = Intent(this,
+                SettingActivity::class.java)
+        startActivity(intent)
     }
 
     private fun logoutAction() {
