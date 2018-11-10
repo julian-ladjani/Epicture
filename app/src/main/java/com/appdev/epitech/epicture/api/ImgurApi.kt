@@ -21,8 +21,6 @@ class ImgurApi {
     companion object {
         val clientId = "7333a4b592aab44"
         val thumbnailMode = "b"
-        var gridAdapter: ImageGridAdapter? = null
-
         private fun getJsonData(jsonResponse: String): String {
             val responseObject = JSONObject(jsonResponse)
             if (responseObject.getBoolean("success")) {
@@ -31,10 +29,6 @@ class ImgurApi {
                 // Horrible hack, fixme
                 return "[]"
             }
-        }
-
-        fun setGrid(grid: ImageGridAdapter?){
-            gridAdapter = grid
         }
 
         fun getSelfAccount(context:Context): Account? {
@@ -102,8 +96,8 @@ class ImgurApi {
                     println("ERROR $error")
                 else {
                     listImage = ConvertData.galleryToMutatableListImgurImage(data, listImage)
-                    gridAdapter!!.clearAdapter()
-                    gridAdapter!!.setNewValues(listImage)
+                    val activity = context as GridActivity
+                    activity.loadGrid(listImage)
                 }
             }
             return listImage
@@ -204,14 +198,13 @@ class ImgurApi {
                             println("ERROR $error")
                         else {
                             listImage = ConvertData.galleryToMutatableListImgurImage(data, listImage)
-                            gridAdapter!!.clearAdapter()
-                            gridAdapter!!.setNewValues(listImage)
+
                         }
                     }
             return listImage
         }
 
-        fun getSearchTag(tag: String): MutableList<ImgurImage> {
+        fun getSearchTag(context: Context, tag: String): MutableList<ImgurImage> {
             var listImage = mutableListOf<ImgurImage>()
             "/gallery/t/$tag".httpGet()
                     .responseString { request, response, result ->
@@ -224,8 +217,8 @@ class ImgurApi {
                             imgurTag = JSONObject(imgurTag).getJSONArray("items").toString()
                             imgurTag = "{data:${imgurTag}, \"success\": true}"
                             listImage = ConvertData.galleryToMutatableListImgurImage(imgurTag, listImage)
-                            gridAdapter!!.clearAdapter()
-                            gridAdapter!!.setNewValues(listImage)
+                            val activity = context as GridActivity
+                            activity.loadGrid(listImage)
                         }
                     }
             return listImage

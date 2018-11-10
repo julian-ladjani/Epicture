@@ -5,11 +5,17 @@ import android.view.ViewGroup
 import android.view.View
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.appdev.epitech.epicture.R
 import com.bumptech.glide.Glide
 import com.appdev.epitech.epicture.entities.ImgurImage
+import com.bumptech.glide.request.RequestOptions
 
-class ImageGridAdapter(private val mContext: Context, mObjects: MutableList<ImgurImage>) :
-        BaseAdapter() {
+
+class ImageGridAdapter(private val mContext: Context,
+                       mObjects: MutableList<ImgurImage>) : BaseAdapter() {
+
+    val progressBar = createPlaceholder(mContext)
 
     private var images: MutableList<ImgurImage>? = mObjects
 
@@ -33,9 +39,19 @@ class ImageGridAdapter(private val mContext: Context, mObjects: MutableList<Imgu
         Glide
                 .with(mContext)
                 .load(images!![position].thumbnailLink)
+                .apply(RequestOptions().placeholder(progressBar))
                 .into(myImageView)
 
         return myImageView
+    }
+
+    private fun createPlaceholder(context: Context) = CircularProgressDrawable(context).also {
+        it.setColorSchemeColors(R.color.colorPrimary)
+        it.setColorFilter(mContext.resources.getColor(R.color.colorPrimary),
+                android.graphics.PorterDuff.Mode.SRC_IN)
+        it.strokeWidth = 5f
+        it.centerRadius = 30f
+        it.start()
     }
 
     fun clearAdapter() {

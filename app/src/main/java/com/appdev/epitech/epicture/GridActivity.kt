@@ -30,34 +30,31 @@ class GridActivity : AppCompatActivity(),
     private var searchBar: MaterialSearchBar? = null
     private var gridAdapter: ImageGridAdapter? = null
     private var suggestionAdapter: SearchBarSuggestionAdapter? = null
-    private var images = mutableListOf(
-            ImgurImage(thumbnailLink = "http://i.imgur.com/rFLNqWIb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/C9pBVt7b.jpg", link = "http://i.imgur.com/C9pBVt7.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/rT5vXE1b.jpg", link = "http://i.imgur.com/rT5vXE1.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/aIy5R2kb.jpg", link = "http://i.imgur.com/aIy5R2k.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/MoJs9pTb.jpg", link = "http://i.imgur.com/MoJs9pT.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/S963yEMb.jpg", link = "http://i.imgur.com/S963yEM.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/rLR2cycb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/SEPdUIxb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/aC9OjaMb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/76Jfv9bb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/fUX7EIBb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/syELajxb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/COzBnrub.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"),
-            ImgurImage(thumbnailLink = "http://i.imgur.com/Z3QjilAb.jpg", link = "http://i.imgur.com/rFLNqWI.jpg"))
+    private lateinit var images: MutableList<ImgurImage>
+    private var gridAlreadyLoad = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_grid)
-        images = ImgurApi.getGallery(this,0,0,false)
         createSearchBar()
-        createGrid()
         createUploadButton()
+        images = ImgurApi.getGallery(this, 0, 0, false)
+    }
+
+    fun loadGrid(images: MutableList<ImgurImage>) {
+        if (gridAlreadyLoad) {
+            gridAdapter!!.clearAdapter()
+            gridAdapter!!.setNewValues(images)
+            grid_pull_to_refresh.isRefreshing = false
+        } else {
+            grid_load_progress.visibility = View.GONE
+            createGrid()
+            gridAlreadyLoad = true
+        }
     }
 
     private fun refreshAction() {
-        gridAdapter!!.clearAdapter()
-        gridAdapter!!.setNewValues(images)
+        images = ImgurApi.getGallery(this, 0, 0, false)
     }
 
     private fun settingAction() {
@@ -111,7 +108,6 @@ class GridActivity : AppCompatActivity(),
         gridAdapter = ImageGridAdapter(this,
                 mutableListOf<ImgurImage>().apply { addAll(images) })
         grid_view_images.adapter = gridAdapter
-        ImgurApi.setGrid(gridAdapter)
         grid_view_images.onItemClickListener = OnItemClickListener { parent, v, position, id ->
             imageClickAction(parent, v, position, id)
         }
@@ -128,7 +124,6 @@ class GridActivity : AppCompatActivity(),
 
     private fun onRefresh() {
         refreshAction()
-        grid_pull_to_refresh.isRefreshing = false
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
@@ -172,7 +167,7 @@ class GridActivity : AppCompatActivity(),
             searchBar!!.setPlaceHolder("Search...")
         } else {
             if (text[0] == '#' && text.length >= 2)
-                images = ImgurApi.getSearchTag(text.toString().substring(1))
+                images = ImgurApi.getSearchTag(this, text.toString().substring(1))
             else
                 images = ImgurApi.getSearch(text.toString(), 0)
             suggestionAdapter!!.addSuggestion(text.toString())

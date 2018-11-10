@@ -10,7 +10,7 @@ import org.json.JSONObject
 class ConvertData {
     companion object {
 
-        val thumbnailMode = "b"
+        val thumbnailMode = "m"
 
         private fun getJsonData(jsonResponse: String): String {
             val responseObject = JSONObject(jsonResponse)
