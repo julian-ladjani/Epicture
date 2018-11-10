@@ -36,7 +36,50 @@ class ConvertData {
                     imgurAccount.reputation
             )
         }
-        fun galleryToMutatableListImgurImage(data: String?, listImage: MutableList<ImgurImage>): MutableList<ImgurImage> {
+
+        fun imagesToMutableListImgurImage(data: String?, listImage: MutableList<ImgurImage>):MutableList<ImgurImage> {
+            val gson = Gson()
+            val imgurGallery = getJsonData(data.toString())
+            val images = gson.fromJson(imgurGallery, Array<ImgurImage>::class.java)
+            for (image in images) {
+                var title = ""
+                if (image.title != null) {
+                    title = image.title
+                }
+                var description = ""
+                if (image.description != null) {
+                    description = image.description
+                }
+                var thumbnailLink = image.link
+                if (image.link!!.substringAfterLast(".") != "gif")
+                    thumbnailLink = image.link!!.substring(0, (image.link.length) - 4) + "${thumbnailMode}." + image.link.substringAfterLast(".")
+                val imgurImage = ImgurImage(
+                        image.id,
+                        title,
+                        description,
+                        image.datetime,
+                        image.type,
+                        image.animated,
+                        image.width,
+                        image.height,
+                        image.size,
+                        image.views,
+                        image.bandwidth,
+                        image.section,
+                        image.link,
+                        image.favorite,
+                        image.nsfw,
+                        image.vote,
+                        image.in_gallery,
+                        thumbnailLink
+
+                )
+                listImage.add(imgurImage)
+            }
+            return listImage
+        }
+
+        fun galleryToMutableListImgurImage(data: String?, listImage: MutableList<ImgurImage>): MutableList<ImgurImage> {
             val gson = Gson()
             val imgurGallery = getJsonData(data.toString())
             val gallery = gson.fromJson(imgurGallery, Array<ImgurGalleryAlbum>::class.java)

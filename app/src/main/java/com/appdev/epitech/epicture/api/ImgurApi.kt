@@ -31,16 +31,15 @@ class ImgurApi {
             }
         }
 
-        fun getSelfAccount(context:Context): Account? {
-            val (isFull,result) = SecretUtils.getSecrets(context)
-            var account : Account? = null
+        fun getSelfAccount(context: Context): Account? {
+            val (isFull, result) = SecretUtils.getSecrets(context)
+            var account: Account? = null
             "/3/account/me".httpGet().responseString { request, response, result ->
                 //make a GET to https://httpbin.org/get and do something with response
                 val (data, error) = result
                 if (error != null) {
                     println(error)
-                }
-                else {
+                } else {
                     account = ConvertData.stringtoAccount(data)
                 }
             }
@@ -57,8 +56,8 @@ class ImgurApi {
             }
         }
 
-        fun getGallery(context:Context, section: Int, sort: Int, nsfwEnabled: Boolean): MutableList<ImgurImage> {
-            val sectionParam = when(section) {
+        fun getGallery(context: Context, section: Int, sort: Int, nsfwEnabled: Boolean): MutableList<ImgurImage> {
+            val sectionParam = when (section) {
                 0 -> "hot"
                 1 -> "top"
                 2 -> "user"
@@ -90,16 +89,16 @@ class ImgurApi {
             var listImage = mutableListOf<ImgurImage>()
             url.httpGet()
                     .responseString { request, response, result ->
-                //make a GET to https://httpbin.org/get and do something with response
-                val (data, error) = result
-                if (error != null)
-                    println("ERROR $error")
-                else {
-                    listImage = ConvertData.galleryToMutatableListImgurImage(data, listImage)
-                    val activity = context as GridActivity
-                    activity.loadGrid(listImage)
-                }
-            }
+                        //make a GET to https://httpbin.org/get and do something with response
+                        val (data, error) = result
+                        if (error != null)
+                            println("ERROR $error")
+                        else {
+                            listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
+                            val activity = context as GridActivity
+                            activity.loadGrid(listImage)
+                        }
+                    }
             return listImage
         }
 
@@ -113,8 +112,12 @@ class ImgurApi {
             val gson = Gson()
             val subredditGallery = gson.fromJson(imgurJson, Array<ImgurGalleryAlbum>::class.java)
             val subredditImages = subredditGallery.map {
-                SubredditImage (
-                        if (it.is_album) { it.cover } else { it.id },
+                SubredditImage(
+                        if (it.is_album) {
+                            it.cover
+                        } else {
+                            it.id
+                        },
                         it.title,
                         it.datetime
                 )
@@ -167,7 +170,7 @@ class ImgurApi {
             return imgurObject.optString("link", "N/A")
         }
 
-        fun getSearch(search: String, sort: Int): MutableList<ImgurImage> {
+        fun getSearch(context: Context, search: String, sort: Int): MutableList<ImgurImage> {
             val sortParam = when (sort) {
                 0 -> "viral"
                 1 -> "time"
@@ -192,13 +195,13 @@ class ImgurApi {
             var listImage = mutableListOf<ImgurImage>()
             url.httpGet()
                     .responseString { request, response, result ->
-                        //make a GET to https://httpbin.org/get and do something with response
                         val (data, error) = result
                         if (error != null)
                             println("ERROR $error")
                         else {
-                            listImage = ConvertData.galleryToMutatableListImgurImage(data, listImage)
-
+                            listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
+                            val activity = context as GridActivity
+                            activity.loadGrid(listImage)
                         }
                     }
             return listImage
@@ -208,7 +211,6 @@ class ImgurApi {
             var listImage = mutableListOf<ImgurImage>()
             "/gallery/t/$tag".httpGet()
                     .responseString { request, response, result ->
-                        //make a GET to https://httpbin.org/get and do something with response
                         val (data, error) = result
                         if (error != null)
                             println("ERROR $error")
@@ -216,7 +218,41 @@ class ImgurApi {
                             var imgurTag = getJsonData(data.toString())
                             imgurTag = JSONObject(imgurTag).getJSONArray("items").toString()
                             imgurTag = "{data:${imgurTag}, \"success\": true}"
-                            listImage = ConvertData.galleryToMutatableListImgurImage(imgurTag, listImage)
+                            listImage = ConvertData.galleryToMutableListImgurImage(imgurTag, listImage)
+                            val activity = context as GridActivity
+                            activity.loadGrid(listImage)
+                        }
+                    }
+            return listImage
+        }
+
+        fun getMyImage(context: Context): MutableList<ImgurImage> {
+            var listImage = mutableListOf<ImgurImage>()
+            "/account/me/images".httpGet()
+                    .responseString { request, response, result ->
+                        val (data, error) = result
+                        if (error != null)
+                            println("ERROR $error")
+                        else {
+                            println("MY:$data")
+                            listImage = ConvertData.imagesToMutableListImgurImage(data, listImage)
+                            val activity = context as GridActivity
+                            activity.loadGrid(listImage)
+                        }
+                    }
+            return listImage
+        }
+
+        fun getMyFavoriteImage(context: Context): MutableList<ImgurImage> {
+            var listImage = mutableListOf<ImgurImage>()
+            "/account/me/gallery_favorites".httpGet()
+                    .responseString { request, response, result ->
+                        val (data, error) = result
+                        if (error != null)
+                            println("ERROR $error")
+                        else {
+                            println("MY:$data")
+                            listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
                             val activity = context as GridActivity
                             activity.loadGrid(listImage)
                         }
@@ -233,13 +269,25 @@ class ImgurApi {
             val gson = Gson()
             val imgurJson = getJsonData(jsonResponse)
             val imgurImage = gson.fromJson(imgurJson, ImgurGalleryAlbum::class.java)
-            return Image (
-                    if (imgurImage.is_album) { imgurImage.cover } else { imgurImage.id },
-                    if (imgurImage.title != null) { imgurImage.title } else { imgurImage.id },
+            return Image(
+                    if (imgurImage.is_album) {
+                        imgurImage.cover
+                    } else {
+                        imgurImage.id
+                    },
+                    if (imgurImage.title != null) {
+                        imgurImage.title
+                    } else {
+                        imgurImage.id
+                    },
                     SecretUtils.getSecrets(context).second.accountUsername,
                     imgurImage.points,
                     imgurImage.datetime,
-                    if (imgurImage.is_album) { imgurImage.id } else { "" },
+                    if (imgurImage.is_album) {
+                        imgurImage.id
+                    } else {
+                        ""
+                    },
                     imgurImage.is_album
             )
         }
