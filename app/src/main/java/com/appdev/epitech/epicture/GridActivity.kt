@@ -49,7 +49,7 @@ class GridActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_grid)
-        images = ImgurApi.getGallery(0,0,false)
+        images = ImgurApi.getGallery(this,0,0,false)
         createSearchBar()
         createGrid()
         createUploadButton()
@@ -111,6 +111,7 @@ class GridActivity : AppCompatActivity(),
         gridAdapter = ImageGridAdapter(this,
                 mutableListOf<ImgurImage>().apply { addAll(images) })
         grid_view_images.adapter = gridAdapter
+        ImgurApi.setGrid(gridAdapter)
         grid_view_images.onItemClickListener = OnItemClickListener { parent, v, position, id ->
             imageClickAction(parent, v, position, id)
         }

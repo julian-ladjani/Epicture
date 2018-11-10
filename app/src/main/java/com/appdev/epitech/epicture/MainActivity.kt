@@ -11,11 +11,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
-        val (isLoggedIn, _) = SecretUtils.getSecrets(this)
+        val (isLoggedIn, result) = SecretUtils.getSecrets(this)
 
         val intent = if (isLoggedIn) {
             FuelManager.instance.basePath = "https://api.imgur.com/3"
-            ImgurApi.getGallery(0,0,false)
+            println("My AT: ${result.accessToken}")
+            FuelManager.instance.baseHeaders = mapOf("Authorization" to "Bearer ${result.accessToken}")
             Intent(this, GridActivity::class.java)
 
         } else {
@@ -25,4 +26,5 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
 }

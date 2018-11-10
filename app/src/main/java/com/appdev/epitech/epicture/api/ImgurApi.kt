@@ -1,19 +1,17 @@
 package com.appdev.epitech.epicture.api
 
 import android.content.Context
-import android.provider.Contacts
 import android.util.Base64
 import com.google.gson.Gson
 import com.appdev.epitech.epicture.SecretUtils
 import com.appdev.epitech.epicture.data.ConvertData
 import com.appdev.epitech.epicture.entities.*
+import com.appdev.epitech.epicture.GridActivity
+import com.appdev.epitech.epicture.adapters.ImageGridAdapter
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.android.core.Json
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.httpGet
-import com.google.gson.JsonObject
-import kotlinx.coroutines.launch
-import okhttp3.Headers
 import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.ResponseBody
@@ -23,6 +21,7 @@ class ImgurApi {
     companion object {
         val clientId = "7333a4b592aab44"
         val thumbnailMode = "b"
+        var gridAdapter: ImageGridAdapter? = null
 
         private fun getJsonData(jsonResponse: String): String {
             val responseObject = JSONObject(jsonResponse)
@@ -34,10 +33,13 @@ class ImgurApi {
             }
         }
 
-        fun getSelfAccount(context:Context): Account {
+        fun setGrid(grid: ImageGridAdapter?){
+            gridAdapter = grid
+        }
+
+        fun getSelfAccount(context:Context): Account? {
             val (isFull,result) = SecretUtils.getSecrets(context)
-            FuelManager.instance.baseHeaders = mapOf("Authorization" to "Bearer ${result.accessToken}")
-            var account = Account("null","null",0,0.0)
+            var account : Account? = null
             "/3/account/me".httpGet().responseString { request, response, result ->
                 //make a GET to https://httpbin.org/get and do something with response
                 val (data, error) = result
@@ -61,8 +63,7 @@ class ImgurApi {
             }
         }
 
-        fun getGallery(section: Int, sort: Int, nsfwEnabled: Boolean): MutableList<ImgurImage> {
-            FuelManager.instance.baseHeaders = mapOf("Authorization" to "Client-ID $clientId")
+        fun getGallery(context:Context, section: Int, sort: Int, nsfwEnabled: Boolean): MutableList<ImgurImage> {
             val sectionParam = when(section) {
                 0 -> "hot"
                 1 -> "top"
@@ -101,6 +102,8 @@ class ImgurApi {
                     println("ERROR $error")
                 else {
                     listImage = ConvertData.galleryToMutatableListImgurImage(data, listImage)
+                    gridAdapter!!.clearAdapter()
+                    gridAdapter!!.setNewValues(listImage)
                 }
             }
             return listImage
@@ -126,8 +129,8 @@ class ImgurApi {
             return subredditImages.toTypedArray()
         }
 
-        fun getComments(image: Image): Array<Comment> {
-            val id = if (image.isAlbum) { image.albumId } else { image.id }
+        fun getComments(image: ImgurImage): Array<Comment> {
+            val id = image.id
             val url = "https://api.imgur.com/3/gallery/$id/comments/best"
             val request = HttpUtils.createRequest(url, mapOf("Authorization" to "Client-ID ${clientId}"))
             val response = HttpUtils.sendRequest(request)
@@ -149,7 +152,7 @@ class ImgurApi {
             return comments.toTypedArray()
         }
 
-        fun uploadImage(file: ByteArray, accessToken: String): String {
+        fun uploadImage(file: ByteArray): String {
             val base64Encoded = Base64.encodeToString(file, Base64.DEFAULT)
 
             val body = MultipartBody.Builder()
@@ -159,8 +162,6 @@ class ImgurApi {
 
             val request = Request.Builder()
                     .url("https://api.imgur.com/3/image")
-                    .header("Authorization", "Client-ID ${clientId}")
-                    .header("Authorization", "Bearer $accessToken")
                     .post(body)
                     .build()
 
@@ -203,6 +204,8 @@ class ImgurApi {
                             println("ERROR $error")
                         else {
                             listImage = ConvertData.galleryToMutatableListImgurImage(data, listImage)
+                            gridAdapter!!.clearAdapter()
+                            gridAdapter!!.setNewValues(listImage)
                         }
                     }
             return listImage
@@ -221,6 +224,8 @@ class ImgurApi {
                             imgurTag = JSONObject(imgurTag).getJSONArray("items").toString()
                             imgurTag = "{data:${imgurTag}, \"success\": true}"
                             listImage = ConvertData.galleryToMutatableListImgurImage(imgurTag, listImage)
+                            gridAdapter!!.clearAdapter()
+                            gridAdapter!!.setNewValues(listImage)
                         }
                     }
             return listImage

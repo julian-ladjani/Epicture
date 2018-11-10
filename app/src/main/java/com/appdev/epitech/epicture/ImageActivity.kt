@@ -1,7 +1,8 @@
 package com.appdev.epitech.epicture
 
-import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.appdev.epitech.epicture.entities.ImgurImage
 import com.bumptech.glide.Glide
@@ -11,13 +12,29 @@ class ImageActivity : AppCompatActivity() {
 
     private var image: ImgurImage? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image)
         image = intent.getParcelableExtra("image")
-        Glide
-                .with(this)
-                .load(image!!.link)
-                .into(photo_view)
+        VideoView.setOnPreparedListener { mp ->
+            mp.isLooping = true
+        }
+        toolbar.title = image!!.title
+        if (image!!.link!!.substringAfterLast(".") != "mp4") {
+            photo_view.visibility = View.VISIBLE
+            VideoView.visibility = View.INVISIBLE
+            Glide
+                    .with(this)
+                    .load(image!!.link)
+                    .into(photo_view)
+        }
+        else {
+            photo_view.visibility = View.INVISIBLE
+            VideoView.visibility = View.VISIBLE
+            VideoView.setVideoURI(Uri.parse(image!!.link))
+            VideoView.scaleX
+            VideoView.start()
+        }
     }
 }

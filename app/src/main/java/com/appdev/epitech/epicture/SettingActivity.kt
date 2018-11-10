@@ -13,8 +13,6 @@ class SettingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_setting)
     }
     fun backButtonAction(view: View){
-        val intent = Intent(this,
-                GridActivity::class.java)
-        startActivity(intent)
+        finish()
     }
 }
