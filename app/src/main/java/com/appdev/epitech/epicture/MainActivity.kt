@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         val intent = if (isLoggedIn) {
             FuelManager.instance.basePath = "https://api.imgur.com/3"
             FuelManager.instance.baseHeaders = mapOf("Authorization" to "Bearer ${result.accessToken}")
-            ImgurApi.getMyImage()
+            // tu me fait chier !!!! pas ici ImgurApi.getMyImage(this)
             Intent(this, GridActivity::class.java)
 
         } else {
