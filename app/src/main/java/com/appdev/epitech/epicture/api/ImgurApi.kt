@@ -101,7 +101,7 @@ class ImgurApi {
                 if (error != null)
                     println("ERROR $error")
                 else {
-                    listImage = ConvertData.galleryToMutatableListImgurImage(data, listImage)
+                    listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
                     gridAdapter!!.clearAdapter()
                     gridAdapter!!.setNewValues(listImage)
                 }
@@ -198,12 +198,11 @@ class ImgurApi {
             var listImage = mutableListOf<ImgurImage>()
             url.httpGet()
                     .responseString { request, response, result ->
-                        //make a GET to https://httpbin.org/get and do something with response
                         val (data, error) = result
                         if (error != null)
                             println("ERROR $error")
                         else {
-                            listImage = ConvertData.galleryToMutatableListImgurImage(data, listImage)
+                            listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
                             gridAdapter!!.clearAdapter()
                             gridAdapter!!.setNewValues(listImage)
                         }
@@ -215,7 +214,6 @@ class ImgurApi {
             var listImage = mutableListOf<ImgurImage>()
             "/gallery/t/$tag".httpGet()
                     .responseString { request, response, result ->
-                        //make a GET to https://httpbin.org/get and do something with response
                         val (data, error) = result
                         if (error != null)
                             println("ERROR $error")
@@ -223,7 +221,41 @@ class ImgurApi {
                             var imgurTag = getJsonData(data.toString())
                             imgurTag = JSONObject(imgurTag).getJSONArray("items").toString()
                             imgurTag = "{data:${imgurTag}, \"success\": true}"
-                            listImage = ConvertData.galleryToMutatableListImgurImage(imgurTag, listImage)
+                            listImage = ConvertData.galleryToMutableListImgurImage(imgurTag, listImage)
+                            gridAdapter!!.clearAdapter()
+                            gridAdapter!!.setNewValues(listImage)
+                        }
+                    }
+            return listImage
+        }
+
+        fun getMyImage(): MutableList<ImgurImage> {
+            var listImage = mutableListOf<ImgurImage>()
+            "/account/me/images".httpGet()
+                    .responseString { request, response, result ->
+                        val (data, error) = result
+                        if (error != null)
+                            println("ERROR $error")
+                        else {
+                            println("MY:$data")
+                            listImage = ConvertData.imagesToMutableListImgurImage(data, listImage)
+                            gridAdapter!!.clearAdapter()
+                            gridAdapter!!.setNewValues(listImage)
+                        }
+                    }
+            return listImage
+        }
+
+        fun getMyFavoriteImage(): MutableList<ImgurImage> {
+            var listImage = mutableListOf<ImgurImage>()
+            "/account/me/gallery_favorites".httpGet()
+                    .responseString { request, response, result ->
+                        val (data, error) = result
+                        if (error != null)
+                            println("ERROR $error")
+                        else {
+                            println("MY:$data")
+                            listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
                             gridAdapter!!.clearAdapter()
                             gridAdapter!!.setNewValues(listImage)
                         }

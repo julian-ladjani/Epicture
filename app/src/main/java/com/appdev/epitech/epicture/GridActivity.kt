@@ -172,7 +172,7 @@ class GridActivity : AppCompatActivity(),
             searchBar!!.setPlaceHolder("Search...")
         } else {
             if (text[0] == '#' && text.length >= 2)
-                images = ImgurApi.getSearchTag(text.toString().substring(1))
+                images = ImgurApi.getSearchTag(text.substring(1))
             else
                 images = ImgurApi.getSearch(text.toString(), 0)
             suggestionAdapter!!.addSuggestion(text.toString())
