@@ -6,10 +6,20 @@ import android.view.View
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.appdev.epitech.epicture.GridActivity
 import com.appdev.epitech.epicture.R
 import com.bumptech.glide.Glide
 import com.appdev.epitech.epicture.entities.ImgurImage
 import com.bumptech.glide.request.RequestOptions
+import kotlinx.android.synthetic.main.activity_grid.*
+import androidx.core.content.ContextCompat.getSystemService
+import android.view.LayoutInflater
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.grid_content_layout.view.*
+import com.etsy.android.grid.util.DynamicHeightImageView
+import com.etsy.android.grid.util.DynamicHeightTextView
 
 
 class ImageGridAdapter(private val mContext: Context,
@@ -26,23 +36,34 @@ class ImageGridAdapter(private val mContext: Context,
     override fun getItemId(position: Int): Long = 0L
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val myImageView: ImageView
+        val inflater = LayoutInflater.from(mContext)
+        val vh: ViewHolder
+        val view: View
         if (null == convertView) {
-            myImageView = ImageView(mContext)
-            val displayMetrics = myImageView.resources.displayMetrics
-            val dpWidth = displayMetrics.widthPixels / 3
-            myImageView.layoutParams = ViewGroup.LayoutParams(dpWidth, dpWidth)
-            myImageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            var convertView = inflater.inflate(R.layout.grid_content_layout, null)
+            vh = ViewHolder()
+            vh.imgView = convertView.imageView
+            vh.textView = convertView.textView
+            convertView.tag = vh
+            view = convertView
         } else {
-            myImageView = convertView as ImageView
+            view = convertView
+            vh = view.tag as ViewHolder
         }
+        vh.textView!!.text = images!![position].title
+        vh.imgView!!.heightRatio = images!![position].height.toDouble()/images!![position].width.toDouble()
         Glide
                 .with(mContext)
                 .load(images!![position].thumbnailLink)
                 .apply(RequestOptions().placeholder(progressBar))
-                .into(myImageView)
+                .into(vh.imgView!!)
 
-        return myImageView
+        return view
+    }
+
+    internal class ViewHolder {
+        var imgView: DynamicHeightImageView? = null
+        var textView: DynamicHeightTextView? = null
     }
 
     private fun createPlaceholder(context: Context) = CircularProgressDrawable(context).also {

@@ -1,82 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:isScrollContainer="true"
     tools:context=".MainActivity">
 
-    <com.mancj.materialsearchbar.MaterialSearchBar
-        android:id="@+id/grid_search_bar"
-        style="@style/MaterialSearchBarDark"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hapticFeedbackEnabled="true"
-        android:saveEnabled="true"
-        android:soundEffectsEnabled="true"
-        app:mt_hint="Search..."
-        app:mt_maxSuggestionsCount="10"
-        app:mt_navIconEnabled="true"
-        app:mt_placeholder="Search..."
-        app:mt_speechMode="true" />
+        android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/grid_upload_button"
-        style="@style/Widget.MaterialComponents.FloatingActionButton"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginBottom="32dp"
-        android:adjustViewBounds="false"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="visible"
-        app:backgroundTint="#00a1ff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@android:drawable/stat_sys_upload" />
-
-    <ProgressBar
-        android:id="@+id/grid_load_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/grid_pull_to_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/grid_search_bar">
-
-        <GridView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/grid_view_images"
+        <com.mancj.materialsearchbar.MaterialSearchBar
+            android:id="@+id/grid_search_bar"
+            style="@style/MaterialSearchBarDark"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="0dp"
+            android:layout_height="wrap_content"
+            android:hapticFeedbackEnabled="true"
+            android:saveEnabled="true"
+            android:soundEffectsEnabled="true"
+            app:mt_hint="Search..."
+            app:mt_maxSuggestionsCount="10"
+            app:mt_navIconEnabled="true"
+            app:mt_placeholder="Search..."
+            app:mt_speechMode="true" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/grid_upload_button"
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="32dp"
+            android:adjustViewBounds="false"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
+            app:backgroundTint="#00a1ff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:srcCompat="@android:drawable/stat_sys_upload" />
+
+        <ProgressBar
+            android:id="@+id/grid_load_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:gravity="center"
-            android:numColumns="3"
-            android:paddingTop="2dp"
-            android:stretchMode="columnWidth"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-        </GridView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/grid_pull_to_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/grid_search_bar">
 
+            <GridView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/grid_view_images"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:item_margin="8dp"
+                app:column_count="2" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <it.sephiroth.android.library.bottomnavigation.BottomNavigation
+        android:id="@+id/BottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:bbn_entries="@menu/bottom_navigation_menu"
+        app:bbn_scrollEnabled="true"
+        app:layout_behavior="@string/bbn_default_view_behavior" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
