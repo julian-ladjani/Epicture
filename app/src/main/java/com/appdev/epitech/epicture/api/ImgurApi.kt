@@ -7,6 +7,7 @@ import com.appdev.epitech.epicture.SecretUtils
 import com.appdev.epitech.epicture.data.ConvertData
 import com.appdev.epitech.epicture.entities.*
 import com.appdev.epitech.epicture.GridActivity
+import com.appdev.epitech.epicture.ImageActivity
 import com.appdev.epitech.epicture.adapters.ImageGridAdapter
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.android.core.Json
@@ -149,25 +150,16 @@ class ImgurApi {
             return comments.toTypedArray()
         }
 
-        fun uploadImage(file: ByteArray): String {
+        fun uploadImage(file: ByteArray) {
             val base64Encoded = Base64.encodeToString(file, Base64.DEFAULT)
-
-            val body = MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("image", base64Encoded)
-                    .build()
-
-            val request = Request.Builder()
-                    .url("https://api.imgur.com/3/image")
-                    .post(body)
-                    .build()
-
-            val response = HttpUtils.sendRequest(request)
-            val responseBody = response.body()!!
-            val jsonResponse = responseBody.string()
-            val imgurJson = getJsonData(jsonResponse)
-            val imgurObject = JSONObject(imgurJson)
-            return imgurObject.optString("link", "N/A")
+            Fuel.post("/image")
+                    .jsonBody("{ \"image\" : \"$base64Encoded\" }")
+                    .response { request, response, result ->
+                        val (data, error) = result
+                        if (error != null)
+                            println("ERROR $error")
+                        println(data)
+                    }
         }
 
         fun getSearch(context: Context, search: String, sort: Int): MutableList<ImgurImage> {
@@ -243,9 +235,27 @@ class ImgurApi {
             return listImage
         }
 
+        fun setImageFavorite(context:Context, image: ImgurImage): Boolean {
+            var favorite = false
+            Fuel.post("/image/${image.id}/favorite")
+                    .response { request, response, result ->
+                        val (data, error) = result
+                        if (error != null) {
+                            println("ERROR $error")
+                            favorite = image.favorite
+                        }
+                        else
+                            favorite = !image.favorite
+                        println("data:$data")
+                        val activity = context as ImageActivity
+                        activity.setfavorite(favorite)
+                    }
+            return favorite
+        }
+
         fun getMyFavoriteImage(context: Context): MutableList<ImgurImage> {
             var listImage = mutableListOf<ImgurImage>()
-            "/account/me/gallery_favorites".httpGet()
+            "/account/me/favorites".httpGet()
                     .responseString { request, response, result ->
                         val (data, error) = result
                         if (error != null)

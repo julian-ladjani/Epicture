@@ -7,9 +7,19 @@
         android:orderInCategory="3"
         android:title="@string/settings_menu_title"
         app:showAsAction="never" />
+    <item android:id="@+id/action_myaccount"
+        android:title="@string/myaccount_menu_title"
+        android:orderInCategory="4"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_mic_black_24dp"/>
+    <item android:id="@+id/action_myfavorite"
+        android:title="@string/myfavorite_menu_title"
+        android:orderInCategory="5"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_mic_black_24dp"/>
     <item android:id="@+id/action_logout"
         android:title="@string/logout_menu_title"
-        android:orderInCategory="4"
+        android:orderInCategory="6"
         app:showAsAction="never"
         android:icon="@drawable/ic_mic_black_24dp"/>
 </menu>

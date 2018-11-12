@@ -47,6 +47,14 @@ class GridActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+    
+    fun accountAction() {
+        images = ImgurApi.getMyImage(this)
+    }
+
+    fun favoriteAction() {
+        images = ImgurApi.getMyFavoriteImage(this)
+    }
 
     fun searchAction(text: String) {
         images = if (text[0] == '#' && text.length >= 2)
@@ -108,7 +116,7 @@ class GridActivity : AppCompatActivity() {
         grid_view_images.layoutManager = staggeredGridLayoutManager
         grid_pull_to_refresh.setOnRefreshListener { GridActivityOnRefreshListener(this).onRefresh() }
     }
-
+    
     //loader
     fun loadGrid(images: MutableList<ImgurImage>) {
         if (gridAlreadyLoad) {
