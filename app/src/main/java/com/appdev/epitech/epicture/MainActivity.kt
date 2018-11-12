@@ -10,7 +10,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting)
         val (isLoggedIn, result) = SecretUtils.getSecrets(this)
 
         val intent = if (isLoggedIn) {

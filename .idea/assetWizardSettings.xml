@@ -60,8 +60,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_download_icon" />
-                            <entry key="sourceFile" value="$USER_HOME$/Downloads/download_icon.svg" />
+                            <entry key="outputName" value="ic_filter_icon" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/filter_icon.svg" />
                           </map>
                         </option>
                       </PersistentState>

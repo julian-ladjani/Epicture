@@ -17,11 +17,11 @@ import com.appdev.epitech.epicture.api.ImgurApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.appdev.epitech.epicture.listeners.*
-import it.sephiroth.android.library.bottomnavigation.BottomNavigation
+import kotlinx.android.synthetic.main.searchbar.view.*
 
 class GridActivity : AppCompatActivity() {
 
-    enum class currentGridEnum {
+    enum class CurrentGridEnum {
         HOME_GRID,
         FAVORITE_GRID,
         UPLOAD_GRID
@@ -30,16 +30,16 @@ class GridActivity : AppCompatActivity() {
     private var searchBar: MaterialSearchBar? = null
     private var gridAdapter: ImageGridAdapter? = null
     private var suggestionAdapter: SearchBarSuggestionAdapter? = null
-    private lateinit var images: MutableList<ImgurImage>
+    private var images: MutableList<ImgurImage> = mutableListOf()
     private var gridAlreadyLoad = false
-    private var currentGrid: currentGridEnum = currentGridEnum.HOME_GRID
+    private var currentGrid: CurrentGridEnum = CurrentGridEnum.HOME_GRID
 
     fun refreshAction() {
-        if (currentGrid == currentGridEnum.HOME_GRID)
+        if (currentGrid == CurrentGridEnum.HOME_GRID)
             homeGridAction()
-        if (currentGrid == currentGridEnum.FAVORITE_GRID)
+        if (currentGrid == CurrentGridEnum.FAVORITE_GRID)
             favoriteGridAction()
-        if (currentGrid == currentGridEnum.UPLOAD_GRID)
+        if (currentGrid == CurrentGridEnum.UPLOAD_GRID)
             uploadGridAction()
     }
 
@@ -59,30 +59,38 @@ class GridActivity : AppCompatActivity() {
     }
 
     fun uploadGridAction() {
-        if (currentGrid !== currentGridEnum.UPLOAD_GRID)
+        if (currentGrid !== CurrentGridEnum.UPLOAD_GRID) {
+            searchBarVisibility(false)
+            searchBarUploadMode()
             grid_load_progress.visibility = View.VISIBLE
-        else
+        }
+        else if (gridAlreadyLoad)
             grid_pull_to_refresh.isRefreshing = true
         images = ImgurApi.getMyImage(this)
-        currentGrid = currentGridEnum.UPLOAD_GRID
+        currentGrid = CurrentGridEnum.UPLOAD_GRID
     }
 
     fun homeGridAction() {
-        if (currentGrid !== currentGridEnum.HOME_GRID)
+        if (currentGrid !== CurrentGridEnum.HOME_GRID) {
+            searchBarVisibility(true)
+            searchBarHomeMode()
             grid_load_progress.visibility = View.VISIBLE
-        else
+        }
+        else if (gridAlreadyLoad)
             grid_pull_to_refresh.isRefreshing = true
         images = ImgurApi.getGallery(this, 0, 0, false)
-        currentGrid = currentGridEnum.HOME_GRID
+        currentGrid = CurrentGridEnum.HOME_GRID
     }
 
     fun favoriteGridAction() {
-        if (currentGrid !== currentGridEnum.FAVORITE_GRID)
+        if (currentGrid !== CurrentGridEnum.FAVORITE_GRID) {
+            searchBarVisibility(false)
             grid_load_progress.visibility = View.VISIBLE
-        else
+        }
+        else if (gridAlreadyLoad)
             grid_pull_to_refresh.isRefreshing = true
         images = ImgurApi.getMyFavoriteImage(this)
-        currentGrid = currentGridEnum.FAVORITE_GRID
+        currentGrid = CurrentGridEnum.FAVORITE_GRID
     }
 
     fun searchAction(text: String) {
@@ -92,7 +100,7 @@ class GridActivity : AppCompatActivity() {
             ImgurApi.getSearch(this, text, 0)
     }
 
-    fun uploadAction(view: View) {
+    fun uploadAction() {
 
     }
 
@@ -106,14 +114,13 @@ class GridActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_grid)
+        if (savedInstanceState != null) {
+            currentGrid = CurrentGridEnum.values()[savedInstanceState.getInt("Grid")]
+        }
+        createGrid()
         createSearchBar()
-        createUploadButton()
         grid_bottom_navigation.setOnMenuItemClickListener(BottomNavigationOnMenuClickListener(this))
-        images = ImgurApi.getGallery(this, 0, 0, false)
-    }
-
-    private fun createUploadButton() {
-        grid_upload_button.setOnClickListener { View.OnClickListener(this::uploadAction) }
+        refreshAction()
     }
 
     private fun createSearchBar() {
@@ -153,8 +160,8 @@ class GridActivity : AppCompatActivity() {
             gridAdapter!!.clearAdapter()
             gridAdapter!!.setNewValues(images)
         } else {
-            grid_load_progress.visibility = View.GONE
-            createGrid()
+            gridAdapter!!.clearAdapter()
+            gridAdapter!!.setNewValues(images)
             gridAlreadyLoad = true
         }
         grid_pull_to_refresh.isRefreshing = false
@@ -184,7 +191,42 @@ class GridActivity : AppCompatActivity() {
         return searchBar!!
     }
 
+    fun searchBarButtonClickAction() {
+        if (currentGrid == CurrentGridEnum.UPLOAD_GRID)
+            uploadAction()
+
+    }
+
+    private fun searchBarHomeMode() {
+        searchBar!!.mt_search.visibility = View.VISIBLE
+        searchBar!!.mt_search.setImageResource(R.drawable.ic_filter_icon)
+    }
+
+    private fun searchBarUploadMode() {
+        searchBar!!.mt_search.visibility = View.VISIBLE
+        searchBar!!.mt_search.setImageResource(R.drawable.ic_upload_icon)
+    }
+
+    private fun searchBarVisibility(visible: Boolean) {
+        searchBar!!.isClickable = visible
+        searchBar!!.mt_nav.isClickable = visible
+        if (visible) {
+            searchBar!!.mt_placeholder.visibility = View.VISIBLE
+            searchBar!!.mt_nav.visibility = View.VISIBLE
+            searchBar!!.mt_search.visibility = View.VISIBLE
+        } else {
+            searchBar!!.mt_placeholder.visibility = View.GONE
+            searchBar!!.mt_nav.visibility = View.GONE
+            searchBar!!.mt_search.visibility = View.GONE
+        }
+    }
+
     fun getSuggestionAdapter(): SearchBarSuggestionAdapter {
         return suggestionAdapter!!
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle?) {
+        super.onSaveInstanceState(savedInstanceState)
+        savedInstanceState!!.putInt("Grid", currentGrid.ordinal)
     }
 }

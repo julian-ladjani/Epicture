@@ -13,8 +13,7 @@ class MaterialSearchBarOnSearchActionListener(var activity: GridActivity) :
             MaterialSearchBar.BUTTON_NAVIGATION -> {
                 searchBar.enableSearch()
             }
-            MaterialSearchBar.BUTTON_SPEECH -> {
-            }
+            MaterialSearchBar.BUTTON_SPEECH -> activity.searchBarButtonClickAction()
             MaterialSearchBar.BUTTON_BACK -> searchBar.disableSearch()
         }
     }
