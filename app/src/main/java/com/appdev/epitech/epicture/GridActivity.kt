@@ -14,12 +14,10 @@ import com.appdev.epitech.epicture.entities.ImgurImage
 import android.content.Intent
 import androidx.appcompat.widget.PopupMenu
 import com.appdev.epitech.epicture.api.ImgurApi
-import com.appdev.epitech.epicture.listeners.GridActivityOnRefreshListener
-import com.appdev.epitech.epicture.listeners.MaterialSearchBarOnMenuClickListener
-import com.appdev.epitech.epicture.listeners.MaterialSearchBarOnSearchActionListener
-import com.appdev.epitech.epicture.listeners.MaterialSearchBarSuggestionOnItemViewClickListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.appdev.epitech.epicture.listeners.*
+import it.sephiroth.android.library.bottomnavigation.BottomNavigation
 
 class GridActivity : AppCompatActivity() {
 
@@ -49,10 +47,17 @@ class GridActivity : AppCompatActivity() {
     }
     
     fun accountAction() {
+        grid_load_progress.visibility = View.VISIBLE
         images = ImgurApi.getMyImage(this)
     }
 
+    fun homeGridAction() {
+        grid_load_progress.visibility = View.VISIBLE
+        images = ImgurApi.getGallery(this, 0, 0, false)
+    }
+
     fun favoriteAction() {
+        grid_load_progress.visibility = View.VISIBLE
         images = ImgurApi.getMyFavoriteImage(this)
     }
 
@@ -79,6 +84,7 @@ class GridActivity : AppCompatActivity() {
         setContentView(R.layout.activity_grid)
         createSearchBar()
         createUploadButton()
+        grid_bottom_navigation.setOnMenuItemClickListener(BottomNavigationOnMenuClickListener(this))
         images = ImgurApi.getGallery(this, 0, 0, false)
     }
 
@@ -122,12 +128,13 @@ class GridActivity : AppCompatActivity() {
         if (gridAlreadyLoad) {
             gridAdapter!!.clearAdapter()
             gridAdapter!!.setNewValues(images)
-            grid_pull_to_refresh.isRefreshing = false
         } else {
             grid_load_progress.visibility = View.GONE
             createGrid()
             gridAlreadyLoad = true
         }
+        grid_pull_to_refresh.isRefreshing = false
+        grid_load_progress.visibility = View.GONE
     }
 
     //dispatcher

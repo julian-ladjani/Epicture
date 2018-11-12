@@ -4,19 +4,19 @@
     app:bbn_alwaysShowLabels="false">
 
     <item
-        android:id="@+id/bottom_navigation_menu"
+        android:id="@+id/action_home_grid"
         android:icon="@drawable/ic_home_icon"
         android:orderInCategory="3"
         android:title="@string/settings_menu_title"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_logout"
+        android:id="@+id/action_favorite_grid"
         android:icon="@drawable/ic_favorite_icon"
         android:orderInCategory="4"
         android:title="@string/logout_menu_title"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_logoout"
+        android:id="@+id/action_upload_grid"
         android:icon="@drawable/ic_upload_icon"
         android:orderInCategory="4"
         android:title="@string/logout_menu_title"
