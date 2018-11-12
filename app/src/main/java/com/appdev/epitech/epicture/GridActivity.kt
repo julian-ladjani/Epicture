@@ -16,6 +16,7 @@ import androidx.appcompat.widget.PopupMenu
 import com.appdev.epitech.epicture.api.ImgurApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.appdev.epitech.epicture.entities.ParameterSearch
 import com.appdev.epitech.epicture.listeners.*
 import kotlinx.android.synthetic.main.searchbar.view.*
 
@@ -31,6 +32,7 @@ class GridActivity : AppCompatActivity() {
     private var gridAdapter: ImageGridAdapter? = null
     private var suggestionAdapter: SearchBarSuggestionAdapter? = null
     private var images: MutableList<ImgurImage> = mutableListOf()
+    private var parameterSearch :ArrayList<ParameterSearch> = arrayListOf()
     private var gridAlreadyLoad = false
     private var currentGrid: CurrentGridEnum = CurrentGridEnum.HOME_GRID
 
@@ -78,7 +80,7 @@ class GridActivity : AppCompatActivity() {
         }
         else if (gridAlreadyLoad)
             grid_pull_to_refresh.isRefreshing = true
-        images = ImgurApi.getGallery(this, 0, 0, false)
+        images = ImgurApi.getGallery(this, 0, 0,0, false)
         currentGrid = CurrentGridEnum.HOME_GRID
     }
 
@@ -94,10 +96,12 @@ class GridActivity : AppCompatActivity() {
     }
 
     fun searchAction(text: String) {
+        parameterSearch.clear()
+        parameterSearch.add(ParameterSearch("q", text))
         images = if (text[0] == '#' && text.length >= 2)
             ImgurApi.getSearchTag(this, text.substring(1))
         else
-            ImgurApi.getSearch(this, text, 0)
+            ImgurApi.getSearch(this, parameterSearch, 0,0)
     }
 
     fun uploadAction() {

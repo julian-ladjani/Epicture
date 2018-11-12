@@ -17,6 +17,7 @@ import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.ResponseBody
 import org.json.JSONObject
+import java.io.File
 
 class ImgurApi {
     companion object {
@@ -47,17 +48,17 @@ class ImgurApi {
             return account
         }
 
-        fun getImageFile(id: String): ByteArray {
-            val request = HttpUtils.createRequest("https://i.imgur.com/$id.jpg", mapOf())
-            val response = HttpUtils.sendRequest(request)
-            val body = response.body()
-            return when (body) {
-                is ResponseBody -> body.bytes()
-                else -> byteArrayOf() // body is null
-            }
+        fun getImageFile(image: ImgurImage){
+            Fuel.download(image!!.link.toString())
+                    .destination { response, url -> File.createTempFile("temp", ".tmp") }
+                    .progress { readBytes, totalBytes ->
+                        val progress = readBytes.toFloat() / totalBytes.toFloat() * 100
+                        println("Bytes downloaded $readBytes / $totalBytes ($progress %)")
+                    }
+                    .response { req, res, result -> }
         }
 
-        fun getGallery(context: Context, section: Int, sort: Int, nsfwEnabled: Boolean): MutableList<ImgurImage> {
+        fun getGallery(context: Context, section: Int, sort: Int, page: Int, nsfwEnabled: Boolean): MutableList<ImgurImage> {
             val sectionParam = when (section) {
                 0 -> "hot"
                 1 -> "top"
@@ -80,7 +81,7 @@ class ImgurApi {
                 else -> ""
             }
 
-            var url = "/gallery/$sectionParam/$sortParam/"
+            var url = "/gallery/$sectionParam/$sortParam/$page"
             if (!timeWindow.equals("")) {
                 url += "$timeWindow/"
             }
@@ -162,7 +163,7 @@ class ImgurApi {
                     }
         }
 
-        fun getSearch(context: Context, search: String, sort: Int): MutableList<ImgurImage> {
+        fun getSearch(context: Context, search: ArrayList<ParameterSearch>, sort: Int, page: Int): MutableList<ImgurImage> {
             val sortParam = when (sort) {
                 0 -> "viral"
                 1 -> "time"
@@ -178,12 +179,18 @@ class ImgurApi {
                 else -> ""
             }
 
-            var url = "gallery/search/$sortParam/"
+            var url = "gallery/search/$sortParam/$page"
             if (!timeWindow.equals("")) {
                 url += timeWindow
             }
-
-            url += "?q=$search"
+            var filter = ""
+            for (search in search) {
+                if (filter == "")
+                    filter +="?${search.type}=${search.data}"
+                else
+                    filter +="&${search.type}=${search.data}"
+            }
+            url += filter
             var listImage = mutableListOf<ImgurImage>()
             url.httpGet()
                     .responseString { request, response, result ->
