@@ -72,6 +72,15 @@ class GridActivity : AppCompatActivity(),
         finish()
     }
 
+
+    private fun accountAction() {
+        images = ImgurApi.getMyImage(this)
+    }
+
+    private fun favoriteAction() {
+        images = ImgurApi.getMyFavoriteImage(this)
+    }
+
     private fun searchAction() {
 
     }
@@ -118,6 +127,8 @@ class GridActivity : AppCompatActivity(),
         when (item.itemId) {
             R.id.action_logout -> logoutAction()
             R.id.action_settings -> settingAction()
+            R.id.action_myaccount -> accountAction()
+            R.id.action_myfavorite -> favoriteAction()
         }
         return false
     }
