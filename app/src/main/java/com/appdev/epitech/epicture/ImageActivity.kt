@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.appdev.epitech.epicture.api.ImgurApi
 import com.appdev.epitech.epicture.entities.ImgurImage
 import com.bumptech.glide.Glide
@@ -12,14 +13,18 @@ import kotlinx.android.synthetic.main.activity_image.*
 class ImageActivity : AppCompatActivity() {
 
     private var image: ImgurImage? = null
+    private var favoriteImage: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image)
         image = intent.getParcelableExtra("image")
-        //setfavorite(image!!.favorite)
-        //favorite_button.setOnClickListener { ImgurApi.setImageFavorite(this, image!!) }
+        setfavorite(image!!.favorite)
+        favoriteButton.setOnClickListener {
+            ImgurApi.setImageFavorite(this, image!!, favoriteImage)
+
+        }
         VideoView.setOnPreparedListener { mp ->
             mp.isLooping = true
         }
@@ -41,10 +46,11 @@ class ImageActivity : AppCompatActivity() {
     }
 
     fun setfavorite(bool:Boolean) {
+        favoriteImage = bool
         if (bool) {
-            //favorite_button.setImageResource(R.drawable.favorite)
-        } //else
-        //favorite_button.setImageResource(R.drawable.unfavorite)
+            favoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.red))
+        } else
+            favoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.white))
     }
 
 }

@@ -235,20 +235,17 @@ class ImgurApi {
             return listImage
         }
 
-        fun setImageFavorite(context:Context, image: ImgurImage): Boolean {
-            var favorite = false
+        fun setImageFavorite(context:Context, image: ImgurImage, favorite : Boolean): Boolean {
             Fuel.post("/image/${image.id}/favorite")
                     .response { request, response, result ->
                         val (data, error) = result
                         if (error != null) {
                             println("ERROR $error")
-                            favorite = image.favorite
                         }
-                        else
-                            favorite = !image.favorite
-                        println("data:$data")
-                        val activity = context as ImageActivity
-                        activity.setfavorite(favorite)
+                        else {
+                            val activity = context as ImageActivity
+                            activity.setfavorite(!favorite)
+                        }
                     }
             return favorite
         }
@@ -262,7 +259,7 @@ class ImgurApi {
                             println("ERROR $error")
                         else {
                             println("MY:$data")
-                            listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
+                            listImage = ConvertData.imagesToMutableListImgurImage(data, listImage)
                             val activity = context as GridActivity
                             activity.loadGrid(listImage)
                         }
