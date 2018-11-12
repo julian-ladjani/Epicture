@@ -77,5 +77,45 @@
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
+    <ImageButton
+        android:id="@+id/favoriteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/photo_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_favorite_icon" />
+
+    <ImageButton
+        android:id="@+id/downloadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/photo_view"
+        app:layout_constraintEnd_toStartOf="@+id/favoriteButton"
+        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_download_icon" />
+
+    <ImageButton
+        android:id="@+id/shareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/photo_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toEndOf="@+id/favoriteButton"
+        app:srcCompat="@drawable/ic_share_icon" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

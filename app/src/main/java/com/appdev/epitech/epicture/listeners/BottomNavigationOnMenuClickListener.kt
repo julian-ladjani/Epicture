@@ -10,8 +10,8 @@ class BottomNavigationOnMenuClickListener(var activity: GridActivity) :
     override fun onMenuItemSelect(p0: Int, p1: Int, p2: Boolean) {
         when (p1) {
             0 -> activity.homeGridAction()
-            1 -> activity.favoriteAction()
-            2 -> activity.accountAction()
+            1 -> activity.favoriteGridAction()
+            2 -> activity.uploadGridAction()
         }
     }
 

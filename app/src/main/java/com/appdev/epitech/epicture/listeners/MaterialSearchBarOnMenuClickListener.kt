@@ -9,8 +9,6 @@ class MaterialSearchBarOnMenuClickListener(var activity: GridActivity) {
         when (item.itemId) {
             R.id.action_logout -> activity.logoutAction()
             R.id.action_settings -> activity.settingAction()
-            R.id.action_myaccount -> activity.accountAction()
-            R.id.action_myfavorite -> activity.favoriteAction()
         }
         return false
     }

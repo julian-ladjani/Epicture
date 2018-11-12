@@ -38,9 +38,9 @@ class GridActivity : AppCompatActivity() {
         if (currentGrid == currentGridEnum.HOME_GRID)
             homeGridAction()
         if (currentGrid == currentGridEnum.FAVORITE_GRID)
-            favoriteAction()
-        if (currentGrid == currentGridEnum.HOME_GRID)
-            homeGridAction()
+            favoriteGridAction()
+        if (currentGrid == currentGridEnum.UPLOAD_GRID)
+            uploadGridAction()
     }
 
     fun settingAction() {
@@ -58,7 +58,7 @@ class GridActivity : AppCompatActivity() {
         finish()
     }
 
-    fun accountAction() {
+    fun uploadGridAction() {
         if (currentGrid !== currentGridEnum.UPLOAD_GRID)
             grid_load_progress.visibility = View.VISIBLE
         else
@@ -76,7 +76,7 @@ class GridActivity : AppCompatActivity() {
         currentGrid = currentGridEnum.HOME_GRID
     }
 
-    fun favoriteAction() {
+    fun favoriteGridAction() {
         if (currentGrid !== currentGridEnum.FAVORITE_GRID)
             grid_load_progress.visibility = View.VISIBLE
         else
