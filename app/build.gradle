@@ -61,6 +61,9 @@ dependencies {
     implementation 'com.github.kittinunf.fuel:fuel-jackson:1.16.0'
     implementation 'com.github.kittinunf.fuel:fuel-moshi:1.16.0'
     implementation 'com.github.kittinunf.fuel:fuel-forge:1.16.0'
+    implementation 'com.github.julian-ladjani:Material-BottomNavigation:2.0.1'
+    implementation 'com.etsy.android.grid:library:1.0.5' +
+            ''
 }
 
 androidExtensions {

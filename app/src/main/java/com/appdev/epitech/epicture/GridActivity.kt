@@ -2,30 +2,28 @@ package com.appdev.epitech.epicture
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.appdev.epitech.epicture.adapters.ImageGridAdapter
-import com.google.android.material.navigation.NavigationView
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.activity_grid.*
 import android.view.MotionEvent
 import android.view.View
 import com.appdev.epitech.epicture.adapters.SearchBarSuggestionAdapter
-import com.mancj.materialsearchbar.adapter.SuggestionsAdapter
-import android.animation.ValueAnimator
-import android.widget.RelativeLayout
 import com.appdev.epitech.epicture.R.menu.menu_search_view
 import com.appdev.epitech.epicture.entities.ImgurImage
 import android.content.Intent
+import android.view.MenuItem
 import android.widget.AdapterView
 import androidx.appcompat.widget.PopupMenu
 import android.widget.AdapterView.OnItemClickListener
 import com.appdev.epitech.epicture.api.ImgurApi
+import com.appdev.epitech.epicture.listeners.GridActivityOnRefreshListener
+import com.appdev.epitech.epicture.listeners.MaterialSearchBarOnMenuClickListener
+import com.appdev.epitech.epicture.listeners.MaterialSearchBarOnSearchActionListener
+import com.appdev.epitech.epicture.listeners.MaterialSearchBarSuggestionOnItemViewClickListener
 
 
-class GridActivity : AppCompatActivity(),
-        NavigationView.OnNavigationItemSelectedListener, MaterialSearchBar.OnSearchActionListener,
-        SuggestionsAdapter.OnItemViewClickListener {
+class GridActivity : AppCompatActivity() {
 
     private var searchBar: MaterialSearchBar? = null
     private var gridAdapter: ImageGridAdapter? = null
@@ -33,37 +31,17 @@ class GridActivity : AppCompatActivity(),
     private lateinit var images: MutableList<ImgurImage>
     private var gridAlreadyLoad = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_grid)
-        createSearchBar()
-        createUploadButton()
+    fun refreshAction() {
         images = ImgurApi.getGallery(this, 0, 0, false)
     }
 
-    fun loadGrid(images: MutableList<ImgurImage>) {
-        if (gridAlreadyLoad) {
-            gridAdapter!!.clearAdapter()
-            gridAdapter!!.setNewValues(images)
-            grid_pull_to_refresh.isRefreshing = false
-        } else {
-            grid_load_progress.visibility = View.GONE
-            createGrid()
-            gridAlreadyLoad = true
-        }
-    }
-
-    private fun refreshAction() {
-        images = ImgurApi.getGallery(this, 0, 0, false)
-    }
-
-    private fun settingAction() {
+    fun settingAction() {
         val intent = Intent(this,
                 SettingActivity::class.java)
         startActivity(intent)
     }
 
-    private fun logoutAction() {
+    fun logoutAction() {
         SecretUtils.deleteSecret(this)
         val intent = Intent(this,
                 MainActivity::class.java)
@@ -71,21 +49,23 @@ class GridActivity : AppCompatActivity(),
         startActivity(intent)
         finish()
     }
-
-
-    private fun accountAction() {
+    
+    fun accountAction() {
         images = ImgurApi.getMyImage(this)
     }
 
-    private fun favoriteAction() {
+    fun favoriteAction() {
         images = ImgurApi.getMyFavoriteImage(this)
     }
 
-    private fun searchAction() {
-
+    fun searchAction(text: String) {
+        images = if (text[0] == '#' && text.length >= 2)
+            ImgurApi.getSearchTag(this, text.substring(1))
+        else
+            ImgurApi.getSearch(this, text, 0)
     }
 
-    private fun uploadAction(view: View) {
+    fun uploadAction(view: View) {
 
     }
 
@@ -95,6 +75,15 @@ class GridActivity : AppCompatActivity(),
         startActivity(i)
     }
 
+    //creators
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_grid)
+        createSearchBar()
+        createUploadButton()
+        images = ImgurApi.getGallery(this, 0, 0, false)
+    }
+
     private fun createUploadButton() {
         grid_upload_button.setOnClickListener { View.OnClickListener(this::uploadAction) }
     }
@@ -102,12 +91,12 @@ class GridActivity : AppCompatActivity(),
     private fun createSearchBar() {
         suggestionAdapter = SearchBarSuggestionAdapter(layoutInflater)
         searchBar = grid_search_bar
-        searchBar!!.setOnSearchActionListener(this)
+        searchBar!!.setOnSearchActionListener(MaterialSearchBarOnSearchActionListener(this))
         searchBar!!.setCustomSuggestionAdapter(suggestionAdapter)
         searchBar!!.inflateMenu(menu_search_view)
         searchBar!!.menu.setOnMenuItemClickListener(
-                PopupMenu.OnMenuItemClickListener(this::onMenuClick))
-        suggestionAdapter!!.setListener(this)
+                PopupMenu.OnMenuItemClickListener(MaterialSearchBarOnMenuClickListener(this)::onMenuClick))
+        suggestionAdapter!!.setListener(MaterialSearchBarSuggestionOnItemViewClickListener(this))
         searchBar!!.setNavIcon(R.drawable.ic_back_to_search,
                 R.drawable.animated_search_to_back,
                 R.drawable.animated_back_to_search)
@@ -120,31 +109,23 @@ class GridActivity : AppCompatActivity(),
         grid_view_images.onItemClickListener = OnItemClickListener { parent, v, position, id ->
             imageClickAction(parent, v, position, id)
         }
-        grid_pull_to_refresh.setOnRefreshListener { onRefresh() }
+        grid_pull_to_refresh.setOnRefreshListener { GridActivityOnRefreshListener(this).onRefresh() }
     }
-
-    private fun onMenuClick(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_logout -> logoutAction()
-            R.id.action_settings -> settingAction()
-            R.id.action_myaccount -> accountAction()
-            R.id.action_myfavorite -> favoriteAction()
+    
+    //loader
+    fun loadGrid(images: MutableList<ImgurImage>) {
+        if (gridAlreadyLoad) {
+            gridAdapter!!.clearAdapter()
+            gridAdapter!!.setNewValues(images)
+            grid_pull_to_refresh.isRefreshing = false
+        } else {
+            grid_load_progress.visibility = View.GONE
+            createGrid()
+            gridAlreadyLoad = true
         }
-        return false
     }
 
-    private fun onRefresh() {
-        refreshAction()
-    }
-
-    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
-        return true
-    }
-
-    override fun onSearchStateChanged(enabled: Boolean) {
-
-    }
-
+    //dispatcher
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (searchBar != null && searchBar!!.isSearchEnabled) {
 
@@ -162,63 +143,12 @@ class GridActivity : AppCompatActivity(),
         return super.dispatchTouchEvent(ev)
     }
 
-    override fun onButtonClicked(buttonCode: Int) {
-        when (buttonCode) {
-            MaterialSearchBar.BUTTON_NAVIGATION -> {
-                searchBar!!.enableSearch()
-            }
-            MaterialSearchBar.BUTTON_SPEECH -> {
-            }
-            MaterialSearchBar.BUTTON_BACK -> searchBar!!.disableSearch()
-        }
+    //getters
+    fun getSearchBar(): MaterialSearchBar {
+        return searchBar!!
     }
 
-    override fun onSearchConfirmed(text: CharSequence?) {
-        if (text.isNullOrEmpty() || text!!.isBlank()) {
-            searchBar!!.setPlaceHolder("Search...")
-        } else if (text[0] == '#' && text.length >= 2)
-            images = ImgurApi.getSearchTag(this, text.toString().substring(1))
-        else
-            images = ImgurApi.getSearch(this, text.toString(), 0)
-        suggestionAdapter!!.addSuggestion(text.toString())
-        searchBar!!.setPlaceHolder(text)
-        searchBar!!.clearFocus()
-        searchBar!!.disableSearch()
-        searchAction()
-    }
-
-    override fun OnItemDeleteListener(position: Int, v: View?) {
-        if (v!!.tag is String) {
-            animateSuggestions(getListHeight(false).toInt(),
-                    getListHeight(true).toInt())
-            suggestionAdapter!!.deleteSuggestion(position, v.tag as String)
-        }
-    }
-
-    private fun getListHeight(isSubtraction: Boolean): Float {
-        val destiny = resources.displayMetrics.density
-        return if (!isSubtraction) suggestionAdapter!!.listHeight * destiny
-        else (suggestionAdapter!!.itemCount - 1) * suggestionAdapter!!.singleViewHeight * destiny
-    }
-
-    private fun animateSuggestions(from: Int, to: Int) {
-        val last = findViewById<View>(R.id.last) as RelativeLayout
-        val lp = last.layoutParams
-        if (to == 0 && lp.height == 0)
-            return
-        val animator = ValueAnimator.ofInt(from, to)
-        animator.duration = 200
-        animator.addUpdateListener { animation ->
-            lp.height = animation.animatedValue as Int
-            last.layoutParams = lp
-        }
-        if (suggestionAdapter!!.itemCount > 0)
-            animator.start()
-    }
-
-    override fun OnItemClickListener(position: Int, v: View?) {
-        if (v!!.tag is String) {
-            searchBar!!.text = (v.tag as String)
-        }
+    fun getSuggestionAdapter(): SearchBarSuggestionAdapter {
+        return suggestionAdapter!!
     }
 }
