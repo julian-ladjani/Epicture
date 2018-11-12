@@ -61,14 +61,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/grid_search_bar">
 
-            <GridView
-                xmlns:android="http://schemas.android.com/apk/res/android"
+            <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/grid_view_images"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:item_margin="8dp"
-                app:column_count="2" />
+                app:column_count="2"
+                app:item_margin="8dp" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

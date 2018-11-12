@@ -3,67 +3,77 @@ package com.appdev.epitech.epicture.adapters
 import android.content.Context
 import android.view.ViewGroup
 import android.view.View
-import android.widget.BaseAdapter
-import android.widget.ImageView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.appdev.epitech.epicture.GridActivity
 import com.appdev.epitech.epicture.R
 import com.bumptech.glide.Glide
 import com.appdev.epitech.epicture.entities.ImgurImage
 import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.activity_grid.*
-import androidx.core.content.ContextCompat.getSystemService
 import android.view.LayoutInflater
-import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.AdapterView
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.grid_content_layout.view.*
 import com.etsy.android.grid.util.DynamicHeightImageView
 import com.etsy.android.grid.util.DynamicHeightTextView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class ImageGridAdapter(private val mContext: Context,
-                       mObjects: MutableList<ImgurImage>) : BaseAdapter() {
+                       mObjects: MutableList<ImgurImage>,
+                       var listener: OnItemClickListener) : RecyclerView.Adapter<ImageGridAdapter.ViewHolder>() {
+
 
     val progressBar = createPlaceholder(mContext)
-
     private var images: MutableList<ImgurImage>? = mObjects
 
-    override fun getCount(): Int = images!!.size
+    override fun getItemCount(): Int = images!!.size
 
-    override fun getItem(position: Int): Any? = null
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(mContext).inflate(R.layout.grid_content_layout, parent, false)
+        return ViewHolder(view)
+    }
 
-    override fun getItemId(position: Int): Long = 0L
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val inflater = LayoutInflater.from(mContext)
-        val vh: ViewHolder
-        val view: View
-        if (null == convertView) {
-            var convertView = inflater.inflate(R.layout.grid_content_layout, null)
-            vh = ViewHolder()
-            vh.imgView = convertView.imageView
-            vh.textView = convertView.textView
-            convertView.tag = vh
-            view = convertView
-        } else {
-            view = convertView
-            vh = view.tag as ViewHolder
+    interface OnItemClickListener {
+        fun onItemClick(item: ImgurImage)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(images!![position], listener)
+        if (images!![position].link!!.substringAfterLast(".") == "mp4") {
+            holder.iconView!!.visibility = View.VISIBLE
+            Glide
+                    .with(mContext)
+                    .load(mContext.resources.getDrawable(R.drawable.ic_video_icon))
+                    .into(holder.iconView!!)
         }
-        vh.textView!!.text = images!![position].title
-        vh.imgView!!.heightRatio = images!![position].height.toDouble()/images!![position].width.toDouble()
+        else if (images!![position].type.contains("gif")) {
+            holder.iconView!!.visibility = View.VISIBLE
+            Glide
+                    .with(mContext)
+                    .load(mContext.resources.getDrawable(R.drawable.ic_gif_icon))
+                    .into(holder.iconView!!)
+        }
+        else
+            holder.iconView!!.visibility = View.GONE
+        holder.textView!!.text = images!![position].title
+        holder.imgView!!.heightRatio = images!![position].height.toDouble() / images!![position].width.toDouble()
         Glide
                 .with(mContext)
                 .load(images!![position].thumbnailLink)
                 .apply(RequestOptions().placeholder(progressBar))
-                .into(vh.imgView!!)
-
-        return view
+                .into(holder.imgView!!)
     }
 
-    internal class ViewHolder {
-        var imgView: DynamicHeightImageView? = null
-        var textView: DynamicHeightTextView? = null
+
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var imgView: DynamicHeightImageView? = itemView.imageView
+        var textView: DynamicHeightTextView? = itemView.textView
+        var iconView: ImageView? = itemView.iconView
+
+        fun bind(item: ImgurImage, listener: OnItemClickListener) {
+            itemView.setOnClickListener { listener.onItemClick(item) }
+        }
     }
 
     private fun createPlaceholder(context: Context) = CircularProgressDrawable(context).also {

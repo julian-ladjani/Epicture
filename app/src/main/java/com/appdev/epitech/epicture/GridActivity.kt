@@ -12,15 +12,14 @@ import com.appdev.epitech.epicture.adapters.SearchBarSuggestionAdapter
 import com.appdev.epitech.epicture.R.menu.menu_search_view
 import com.appdev.epitech.epicture.entities.ImgurImage
 import android.content.Intent
-import android.widget.AdapterView
 import androidx.appcompat.widget.PopupMenu
-import android.widget.AdapterView.OnItemClickListener
 import com.appdev.epitech.epicture.api.ImgurApi
 import com.appdev.epitech.epicture.listeners.GridActivityOnRefreshListener
 import com.appdev.epitech.epicture.listeners.MaterialSearchBarOnMenuClickListener
 import com.appdev.epitech.epicture.listeners.MaterialSearchBarOnSearchActionListener
 import com.appdev.epitech.epicture.listeners.MaterialSearchBarSuggestionOnItemViewClickListener
-
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 class GridActivity : AppCompatActivity() {
 
@@ -60,9 +59,9 @@ class GridActivity : AppCompatActivity() {
 
     }
 
-    private fun imageClickAction(parent: AdapterView<*>, v: View, position: Int, id: Long) {
+    private fun imageClickAction(image: ImgurImage) {
         val i = Intent(this, ImageActivity::class.java)
-        i.putExtra("image", images[position])
+        i.putExtra("image", image)
         startActivity(i)
     }
 
@@ -94,12 +93,19 @@ class GridActivity : AppCompatActivity() {
     }
 
     private fun createGrid() {
-        gridAdapter = ImageGridAdapter(this,
-                mutableListOf<ImgurImage>().apply { addAll(images) })
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+
+        gridAdapter = ImageGridAdapter(
+                this,
+                mutableListOf<ImgurImage>().apply { addAll(images) },
+                object : ImageGridAdapter.OnItemClickListener {
+                    override fun onItemClick(item: ImgurImage) {
+                        imageClickAction(item)
+                    }
+                }
+        )
         grid_view_images.adapter = gridAdapter
-        grid_view_images.onItemClickListener = OnItemClickListener { parent, v, position, id ->
-            imageClickAction(parent, v, position, id)
-        }
+        grid_view_images.layoutManager = staggeredGridLayoutManager
         grid_pull_to_refresh.setOnRefreshListener { GridActivityOnRefreshListener(this).onRefresh() }
     }
 
