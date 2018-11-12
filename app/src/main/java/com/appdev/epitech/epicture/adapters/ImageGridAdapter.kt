@@ -24,12 +24,14 @@ class ImageGridAdapter(private val mContext: Context,
 
 
     val progressBar = createPlaceholder(mContext)
+    private var mParent: ViewGroup? = null
     private var images: MutableList<ImgurImage>? = mObjects
 
     override fun getItemCount(): Int = images!!.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(mContext).inflate(R.layout.grid_content_layout, parent, false)
+        mParent = parent
         return ViewHolder(view)
     }
 
@@ -61,7 +63,7 @@ class ImageGridAdapter(private val mContext: Context,
         Glide
                 .with(mContext)
                 .load(images!![position].thumbnailLink)
-                .apply(RequestOptions().placeholder(progressBar))
+                .apply(RequestOptions().placeholder(createPlaceholder(mContext)))
                 .into(holder.imgView!!)
     }
 
