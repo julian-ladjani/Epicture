@@ -21,14 +21,26 @@ import it.sephiroth.android.library.bottomnavigation.BottomNavigation
 
 class GridActivity : AppCompatActivity() {
 
+    enum class currentGridEnum {
+        HOME_GRID,
+        FAVORITE_GRID,
+        UPLOAD_GRID
+    }
+
     private var searchBar: MaterialSearchBar? = null
     private var gridAdapter: ImageGridAdapter? = null
     private var suggestionAdapter: SearchBarSuggestionAdapter? = null
     private lateinit var images: MutableList<ImgurImage>
     private var gridAlreadyLoad = false
+    private var currentGrid: currentGridEnum = currentGridEnum.HOME_GRID
 
     fun refreshAction() {
-        images = ImgurApi.getGallery(this, 0, 0, false)
+        if (currentGrid == currentGridEnum.HOME_GRID)
+            homeGridAction()
+        if (currentGrid == currentGridEnum.FAVORITE_GRID)
+            favoriteAction()
+        if (currentGrid == currentGridEnum.HOME_GRID)
+            homeGridAction()
     }
 
     fun settingAction() {
@@ -45,20 +57,32 @@ class GridActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
-    
+
     fun accountAction() {
-        grid_load_progress.visibility = View.VISIBLE
+        if (currentGrid !== currentGridEnum.UPLOAD_GRID)
+            grid_load_progress.visibility = View.VISIBLE
+        else
+            grid_pull_to_refresh.isRefreshing = true
         images = ImgurApi.getMyImage(this)
+        currentGrid = currentGridEnum.UPLOAD_GRID
     }
 
     fun homeGridAction() {
-        grid_load_progress.visibility = View.VISIBLE
+        if (currentGrid !== currentGridEnum.HOME_GRID)
+            grid_load_progress.visibility = View.VISIBLE
+        else
+            grid_pull_to_refresh.isRefreshing = true
         images = ImgurApi.getGallery(this, 0, 0, false)
+        currentGrid = currentGridEnum.HOME_GRID
     }
 
     fun favoriteAction() {
-        grid_load_progress.visibility = View.VISIBLE
+        if (currentGrid !== currentGridEnum.FAVORITE_GRID)
+            grid_load_progress.visibility = View.VISIBLE
+        else
+            grid_pull_to_refresh.isRefreshing = true
         images = ImgurApi.getMyFavoriteImage(this)
+        currentGrid = currentGridEnum.FAVORITE_GRID
     }
 
     fun searchAction(text: String) {
@@ -122,7 +146,7 @@ class GridActivity : AppCompatActivity() {
         grid_view_images.layoutManager = staggeredGridLayoutManager
         grid_pull_to_refresh.setOnRefreshListener { GridActivityOnRefreshListener(this).onRefresh() }
     }
-    
+
     //loader
     fun loadGrid(images: MutableList<ImgurImage>) {
         if (gridAlreadyLoad) {
