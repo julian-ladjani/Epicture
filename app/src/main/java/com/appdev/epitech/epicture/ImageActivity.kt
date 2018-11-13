@@ -33,7 +33,8 @@ class ImageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image)
         image = intent.getParcelableExtra("image")
-        setfavorite(image!!.favorite)
+        var filtered = ImgurApi.getFavorite().filter { x -> x.id == image!!.id }
+        setfavorite(filtered.count() != 0)
         shareButton.setOnClickListener {
             shareAction()
         }
@@ -42,6 +43,7 @@ class ImageActivity : AppCompatActivity() {
         }
         favoriteButton.setOnClickListener {
             ImgurApi.setImageFavorite(this, image!!, favoriteImage)
+            ImgurApi.reloadFavorite()
         }
         VideoView.setOnPreparedListener { mp ->
             mp.isLooping = true

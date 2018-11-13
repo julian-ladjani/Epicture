@@ -1,6 +1,7 @@
 package com.appdev.epitech.epicture.api
 
 import android.content.Context
+import android.text.BoringLayout
 import android.util.Base64
 import com.google.gson.Gson
 import com.appdev.epitech.epicture.SecretUtils
@@ -24,6 +25,9 @@ class ImgurApi {
     companion object {
         val clientId = "571a8127eb51724"
         val thumbnailMode = "b"
+        private var imagesFavorite: MutableList<ImgurImage> = mutableListOf()
+
+
         private fun getJsonData(jsonResponse: String): String {
             val responseObject = JSONObject(jsonResponse)
             if (responseObject.getBoolean("success")) {
@@ -32,6 +36,14 @@ class ImgurApi {
                 // Horrible hack, fixme
                 return "[]"
             }
+        }
+
+        fun getFavorite(): MutableList<ImgurImage> {
+            return imagesFavorite
+        }
+
+        fun reloadFavorite() {
+            imagesFavorite = getMyFavoriteImage(null, false)
         }
 
         fun getSelfAccount(context: Context): Account? {
@@ -142,7 +154,7 @@ class ImgurApi {
             return comments.toTypedArray()
         }
 
-        fun uploadImage(file: ByteArray) {
+        fun uploadImage(context: Context,file: ByteArray) {
             println(file.toString())
             val base64Encoded = Base64.encodeToString(file, Base64.DEFAULT)
             "/image".httpPost(listOf(Pair("image", base64Encoded)))
@@ -151,6 +163,8 @@ class ImgurApi {
                         if (error != null)
                             println("ERROR $error")
                         println("Data:$data")
+                        var activity = context as GridActivity
+                        activity.refreshAction()
                     }
         }
 
@@ -248,7 +262,7 @@ class ImgurApi {
             return favorite
         }
 
-        fun getMyFavoriteImage(context: Context): MutableList<ImgurImage> {
+        fun getMyFavoriteImage(context: Context?, mode:Boolean): MutableList<ImgurImage> {
             var listImage = mutableListOf<ImgurImage>()
             "/account/me/favorites".httpGet()
                     .responseString { request, response, result ->
@@ -256,10 +270,11 @@ class ImgurApi {
                         if (error != null)
                             println("ERROR $error")
                         else {
-                            println("MY:$data")
                             listImage = ConvertData.imagesToMutableListImgurImage(data, listImage)
-                            val activity = context as GridActivity
-                            activity.loadGrid(listImage)
+                            if (mode) {
+                                val activity = context as GridActivity
+                                activity.loadGrid(listImage)
+                            }
                         }
                     }
             return listImage
