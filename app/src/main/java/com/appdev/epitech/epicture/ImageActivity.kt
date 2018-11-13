@@ -86,6 +86,14 @@ class ImageActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (image!!.link!!.substringAfterLast(".") == "mp4") {
+            VideoView.start()
+            media_load_progress.visibility = View.VISIBLE
+        }
+    }
+
     private val onInfoToPlayStateListener = MediaPlayer.OnInfoListener { mp, what, extra ->
         if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
             media_load_progress.visibility = View.GONE
