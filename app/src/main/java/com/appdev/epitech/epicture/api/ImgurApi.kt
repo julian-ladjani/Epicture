@@ -48,16 +48,6 @@ class ImgurApi {
             return account
         }
 
-        fun getImageFile(image: ImgurImage){
-            Fuel.download(image!!.link.toString())
-                    .destination { response, url -> File.createTempFile("temp", ".tmp") }
-                    .progress { readBytes, totalBytes ->
-                        val progress = readBytes.toFloat() / totalBytes.toFloat() * 100
-                        println("Bytes downloaded $readBytes / $totalBytes ($progress %)")
-                    }
-                    .response { req, res, result -> }
-        }
-
         fun getGallery(context: Context, section: Int, sort: Int, page: Int, nsfwEnabled: Boolean): MutableList<ImgurImage> {
             val sectionParam = when (section) {
                 0 -> "hot"

@@ -43,9 +43,6 @@ class ImageActivity : AppCompatActivity() {
         favoriteButton.setOnClickListener {
             ImgurApi.setImageFavorite(this, image!!, favoriteImage)
         }
-        downloadButton.setOnClickListener {
-            ImgurApi.getImageFile(image!!)
-        }
         VideoView.setOnPreparedListener { mp ->
             mp.isLooping = true
         }
