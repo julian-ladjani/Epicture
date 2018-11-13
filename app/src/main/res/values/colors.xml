@@ -20,4 +20,10 @@
     <color name="facebook">#4267B2</color>
     <color name="googlePlus">#DB4437</color>
     <color name="github">#24292E</color>
+    <color name="corDefundo">#FFFFFF</color>
+    <color name="amarelo">#cfcf09</color>
+    <color name="verde">#26840a</color>
+    <color name="cinzaClaro">#d4d4d4</color>
+    <color name="cinzaEscuro">#4d4d4d</color>
+    <color name="azulClaro">#0897a7</color>
 </resources>
