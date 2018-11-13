@@ -117,5 +117,23 @@
         app:layout_constraintStart_toEndOf="@+id/favoriteButton"
         app:srcCompat="@drawable/ic_share_icon" />
 
+    <ru.dimorinny.floatingtextbutton.FloatingTextButton
+        android:id="@+id/viewCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="14dp"
+        android:clickable="false"
+        app:floating_background_color="@color/searchBarPlaceholderColor"
+        app:floating_left_icon="@android:drawable/ic_menu_view"
+        app:floating_title=""
+        app:floating_title_color="@android:color/white"
+        app:layout_behavior="ru.dimorinny.floatingtextbutton.behavior.SnackbarBehavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:floating_title="" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -46,6 +46,7 @@ class ImageActivity : AppCompatActivity() {
         VideoView.setOnPreparedListener { mp ->
             mp.isLooping = true
         }
+        viewCounter.title = image!!.views
         toolbar.title = image!!.title
         if (image!!.link!!.substringAfterLast(".") != "mp4") {
             photo_view.visibility = View.VISIBLE
