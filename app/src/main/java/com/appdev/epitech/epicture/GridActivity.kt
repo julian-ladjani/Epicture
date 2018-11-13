@@ -98,7 +98,7 @@ class GridActivity : AppCompatActivity() {
             grid_load_progress.visibility = View.VISIBLE
         } else if (gridAlreadyLoad)
             grid_pull_to_refresh.isRefreshing = true
-        images = ImgurApi.getMyFavoriteImage(this)
+        images = ImgurApi.getMyFavoriteImage(this, true)
         currentGrid = CurrentGridEnum.FAVORITE_GRID
     }
 
@@ -120,7 +120,7 @@ class GridActivity : AppCompatActivity() {
                     .withResources(R.string.choose_file, R.string.title_choose, R.string.dialog_cancel)
                     .withChosenListener {
                         path, pathFile -> _path = path
-                        ImgurApi.uploadImage(pathFile.readBytes())
+                        ImgurApi.uploadImage(this, pathFile.readBytes())
                     }
                     .build()
                     .show()*/
@@ -162,6 +162,7 @@ class GridActivity : AppCompatActivity() {
         if (savedInstanceState != null) {
             currentGrid = CurrentGridEnum.values()[savedInstanceState.getInt("Grid")]
         }
+        ImgurApi.reloadFavorite()
         createGrid()
         createSearchBar()
         grid_bottom_navigation.setOnMenuItemClickListener(BottomNavigationOnMenuClickListener(this))
