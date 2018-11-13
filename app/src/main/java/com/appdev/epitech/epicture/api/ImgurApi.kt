@@ -13,6 +13,7 @@ import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.android.core.Json
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.httpPost
 import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.ResponseBody
@@ -144,15 +145,12 @@ class ImgurApi {
         fun uploadImage(file: ByteArray) {
             println(file.toString())
             val base64Encoded = Base64.encodeToString(file, Base64.DEFAULT)
-            val json = JSONObject()
-            json.put("image", base64Encoded)
-            Fuel.post("/upload")
-                    .body(json.toString())
+            "/image".httpPost(listOf(Pair("image", base64Encoded)))
                     .response { request, response, result ->
                         val (data, error) = result
                         if (error != null)
                             println("ERROR $error")
-                        println(data)
+                        println("Data:$data")
                     }
         }
 
