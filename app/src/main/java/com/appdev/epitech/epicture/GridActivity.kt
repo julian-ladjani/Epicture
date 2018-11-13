@@ -16,7 +16,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import com.appdev.epitech.epicture.api.ImgurApi
@@ -25,9 +24,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.appdev.epitech.epicture.entities.ParameterSearch
 import com.appdev.epitech.epicture.listeners.*
 import kotlinx.android.synthetic.main.searchbar.view.*
-import com.obsez.android.lib.filechooser.ChooserDialog
-import android.R.attr.path
-import android.content.Context
+import br.tiagohm.materialfilechooser.MaterialFileChooser
+import br.tiagohm.materialfilechooser.Sorter
 import java.io.File
 
 
@@ -43,9 +41,9 @@ class GridActivity : AppCompatActivity() {
     private var gridAdapter: ImageGridAdapter? = null
     private var suggestionAdapter: SearchBarSuggestionAdapter? = null
     private var images: MutableList<ImgurImage> = mutableListOf()
-    private var parameterSearch :ArrayList<ParameterSearch> = arrayListOf()
+    private var parameterSearch: ArrayList<ParameterSearch> = arrayListOf()
     private var gridAlreadyLoad = false
-    private var _path: String? = ""
+    private var _path: File? = Environment.getExternalStorageDirectory()
     private var currentGrid: CurrentGridEnum = CurrentGridEnum.HOME_GRID
 
     fun refreshAction() {
@@ -90,7 +88,7 @@ class GridActivity : AppCompatActivity() {
             grid_load_progress.visibility = View.VISIBLE
         } else if (gridAlreadyLoad)
             grid_pull_to_refresh.isRefreshing = true
-        images = ImgurApi.getGallery(this, 0, 0,0, false)
+        images = ImgurApi.getGallery(this, 0, 0, 0, false)
         currentGrid = CurrentGridEnum.HOME_GRID
     }
 
@@ -110,12 +108,12 @@ class GridActivity : AppCompatActivity() {
         images = if (text[0] == '#' && text.length >= 2)
             ImgurApi.getSearchTag(this, text.substring(1))
         else
-            ImgurApi.getSearch(this, parameterSearch, 0,0)
+            ImgurApi.getSearch(this, parameterSearch, 0, 0)
     }
 
     fun uploadAction(permissionResquested: Boolean) {
         if (permissionResquested || haveStoragePermission()) {
-            ChooserDialog().with(this)
+            /*ChooserDialog().with(this)
                     .withFilter(false, false, "jpg", "jpeg", "png", "gif", "pdf", "apng", "tiff")
                     .enableOptions(true)
                     .withStartFile(_path!!)
@@ -125,6 +123,28 @@ class GridActivity : AppCompatActivity() {
                         ImgurApi.uploadImage(this, pathFile.readBytes())
                     }
                     .build()
+                    .show()*/
+            MaterialFileChooser(this,
+                    allowBrowsing = true,
+                    allowCreateFolder = false,
+                    allowMultipleFiles = false,
+                    allowSelectFolder = false,
+                    minSelectedFiles = 1,
+                    maxSelectedFiles = 3,
+                    showFiles = true,
+                    showFoldersFirst = true,
+                    showFolders = true,
+                    showHiddenFiles = false,
+                    initialFolder = _path!!,
+                    restoreFolder = false)
+                    .title("Select an image or a video")
+                    .sorter(Sorter.ByNewestModification)
+                    .onSelectedFilesListener {
+                        if (it.isNotEmpty()) {
+                            ImgurApi.uploadImage(it[0].readBytes())
+                            _path = it[0].parentFile
+                        }
+                    }
                     .show()
         }
     }
