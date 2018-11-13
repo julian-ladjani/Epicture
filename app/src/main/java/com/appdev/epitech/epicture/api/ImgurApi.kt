@@ -20,7 +20,7 @@ import org.json.JSONObject
 
 class ImgurApi {
     companion object {
-        val clientId = "7333a4b592aab44"
+        val clientId = "571a8127eb51724"
         val thumbnailMode = "b"
         private fun getJsonData(jsonResponse: String): String {
             val responseObject = JSONObject(jsonResponse)
@@ -151,9 +151,12 @@ class ImgurApi {
         }
 
         fun uploadImage(file: ByteArray) {
+            println(file.toString())
             val base64Encoded = Base64.encodeToString(file, Base64.DEFAULT)
-            Fuel.post("/image")
-                    .jsonBody("{ \"image\" : \"$base64Encoded\" }")
+            val json = JSONObject()
+            json.put("image", base64Encoded)
+            Fuel.post("/upload")
+                    .body(json.toString())
                     .response { request, response, result ->
                         val (data, error) = result
                         if (error != null)

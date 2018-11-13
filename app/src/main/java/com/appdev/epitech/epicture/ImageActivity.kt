@@ -23,9 +23,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 
 
-
-
-
 class ImageActivity : AppCompatActivity() {
 
     private var image: ImgurImage? = null
@@ -58,8 +55,7 @@ class ImageActivity : AppCompatActivity() {
                     .with(this)
                     .load(image!!.link)
                     .into(photo_view)
-        }
-        else {
+        } else {
             photo_view.visibility = View.INVISIBLE
             VideoView.visibility = View.VISIBLE
             VideoView.setVideoURI(Uri.parse(image!!.link))
@@ -82,7 +78,7 @@ class ImageActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             downloadAction(true)
         }
     }
@@ -90,7 +86,8 @@ class ImageActivity : AppCompatActivity() {
     fun downloadAction(permissionResquested: Boolean) {
         if (permissionResquested || haveStoragePermission()) {
             val request = DownloadManager.Request(Uri.parse(image!!.link))
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, image!!.id)
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
+                    image!!.id + "." + image!!.link!!.substringAfterLast("."))
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             request.allowScanningByMediaScanner()
             val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -106,7 +103,7 @@ class ImageActivity : AppCompatActivity() {
         startActivity(Intent.createChooser(shareIntent, "Share File Using!"));
     }
 
-    fun setfavorite(bool:Boolean) {
+    fun setfavorite(bool: Boolean) {
         favoriteImage = bool
         if (bool) {
             favoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.red))

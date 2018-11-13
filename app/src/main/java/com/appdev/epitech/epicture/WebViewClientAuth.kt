@@ -12,7 +12,7 @@ class WebViewClientAuth(private val context: Context,
     override fun onPageFinished(view: WebView?, url: String?) {
         super.onPageFinished(view, url)
 
-        if (url!!.contains("empire")) {
+        if (url!!.contains("epicture_auth_redirect")) {
             val parameters = try {
                 UrlUtils.parseOauthRedirectionUrl(url)
             } catch (e: OauthFailedException) {

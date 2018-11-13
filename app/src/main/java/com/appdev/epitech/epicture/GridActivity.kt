@@ -1,5 +1,6 @@
 package com.appdev.epitech.epicture
 
+import android.Manifest
 import android.graphics.Rect
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -12,12 +13,22 @@ import com.appdev.epitech.epicture.adapters.SearchBarSuggestionAdapter
 import com.appdev.epitech.epicture.R.menu.menu_search_view
 import com.appdev.epitech.epicture.entities.ImgurImage
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Environment
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityCompat
 import com.appdev.epitech.epicture.api.ImgurApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.appdev.epitech.epicture.listeners.*
 import kotlinx.android.synthetic.main.searchbar.view.*
+import com.obsez.android.lib.filechooser.ChooserDialog
+import android.R.attr.path
+import android.content.Context
+import java.io.File
+
 
 class GridActivity : AppCompatActivity() {
 
@@ -32,6 +43,7 @@ class GridActivity : AppCompatActivity() {
     private var suggestionAdapter: SearchBarSuggestionAdapter? = null
     private var images: MutableList<ImgurImage> = mutableListOf()
     private var gridAlreadyLoad = false
+    private var _path: String? = ""
     private var currentGrid: CurrentGridEnum = CurrentGridEnum.HOME_GRID
 
     fun refreshAction() {
@@ -63,8 +75,7 @@ class GridActivity : AppCompatActivity() {
             searchBarVisibility(false)
             searchBarUploadMode()
             grid_load_progress.visibility = View.VISIBLE
-        }
-        else if (gridAlreadyLoad)
+        } else if (gridAlreadyLoad)
             grid_pull_to_refresh.isRefreshing = true
         images = ImgurApi.getMyImage(this)
         currentGrid = CurrentGridEnum.UPLOAD_GRID
@@ -75,8 +86,7 @@ class GridActivity : AppCompatActivity() {
             searchBarVisibility(true)
             searchBarHomeMode()
             grid_load_progress.visibility = View.VISIBLE
-        }
-        else if (gridAlreadyLoad)
+        } else if (gridAlreadyLoad)
             grid_pull_to_refresh.isRefreshing = true
         images = ImgurApi.getGallery(this, 0, 0, false)
         currentGrid = CurrentGridEnum.HOME_GRID
@@ -86,8 +96,7 @@ class GridActivity : AppCompatActivity() {
         if (currentGrid !== CurrentGridEnum.FAVORITE_GRID) {
             searchBarVisibility(false)
             grid_load_progress.visibility = View.VISIBLE
-        }
-        else if (gridAlreadyLoad)
+        } else if (gridAlreadyLoad)
             grid_pull_to_refresh.isRefreshing = true
         images = ImgurApi.getMyFavoriteImage(this)
         currentGrid = CurrentGridEnum.FAVORITE_GRID
@@ -100,8 +109,20 @@ class GridActivity : AppCompatActivity() {
             ImgurApi.getSearch(this, text, 0)
     }
 
-    fun uploadAction() {
-
+    fun uploadAction(permissionResquested: Boolean) {
+        if (permissionResquested || haveStoragePermission()) {
+            ChooserDialog().with(this)
+                    .withFilter(false, false, "jpg", "jpeg", "png", "gif", "pdf", "apng", "tiff")
+                    .enableOptions(true)
+                    .withStartFile(_path!!)
+                    .withResources(R.string.choose_file, R.string.title_choose, R.string.dialog_cancel)
+                    .withChosenListener {
+                        path, pathFile -> _path = path
+                        ImgurApi.uploadImage(pathFile.readBytes())
+                    }
+                    .build()
+                    .show()
+        }
     }
 
     private fun imageClickAction(image: ImgurImage) {
@@ -193,7 +214,7 @@ class GridActivity : AppCompatActivity() {
 
     fun searchBarButtonClickAction() {
         if (currentGrid == CurrentGridEnum.UPLOAD_GRID)
-            uploadAction()
+            uploadAction(false)
 
     }
 
@@ -228,5 +249,30 @@ class GridActivity : AppCompatActivity() {
     override fun onSaveInstanceState(savedInstanceState: Bundle?) {
         super.onSaveInstanceState(savedInstanceState)
         savedInstanceState!!.putInt("Grid", currentGrid.ordinal)
+    }
+
+    fun haveStoragePermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                return true
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1234)
+                return false
+            }
+        } else {
+            return true
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            1234 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    uploadAction(true)
+                }
+                return
+            }
+        }
     }
 }
