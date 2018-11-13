@@ -15,12 +15,15 @@ import kotlinx.android.synthetic.main.activity_image.*
 import android.app.DownloadManager
 import android.content.Context
 import android.os.Environment
-import android.os.Environment.DIRECTORY_DOWNLOADS
-import android.Manifest.permission
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import androidx.core.app.ActivityCompat
 import android.content.pm.PackageManager
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.os.Build
+import android.media.MediaPlayer
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 
 
 class ImageActivity : AppCompatActivity() {
@@ -54,14 +57,48 @@ class ImageActivity : AppCompatActivity() {
             Glide
                     .with(this)
                     .load(image!!.link)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                                p0: GlideException?,
+                                p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?,
+                                p3: Boolean): Boolean {
+                            media_load_progress.progressDrawable.setColorFilter(
+                                    resources.getColor(R.color.red), PorterDuff.Mode.SRC_IN)
+                            return false
+                        }
+
+                        override fun onResourceReady(
+                                p0: Drawable?,
+                                p1: Any?,
+                                p2: com.bumptech.glide.request.target.Target<Drawable>?,
+                                p3: DataSource?, p4: Boolean): Boolean {
+                            media_load_progress.visibility = View.GONE
+                            return false
+                        }
+                    })
                     .into(photo_view)
         } else {
             photo_view.visibility = View.INVISIBLE
             VideoView.visibility = View.VISIBLE
             VideoView.setVideoURI(Uri.parse(image!!.link))
+            VideoView.setOnInfoListener(onInfoToPlayStateListener)
             VideoView.start()
         }
     }
+
+    private val onInfoToPlayStateListener = MediaPlayer.OnInfoListener { mp, what, extra ->
+        if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
+            media_load_progress.visibility = View.GONE
+        }
+        if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
+            media_load_progress.visibility = View.VISIBLE
+        }
+        if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
+            media_load_progress.visibility = View.VISIBLE
+        }
+        false
+    }
+
 
     fun haveStoragePermission(): Boolean {
         if (Build.VERSION.SDK_INT >= 23) {
