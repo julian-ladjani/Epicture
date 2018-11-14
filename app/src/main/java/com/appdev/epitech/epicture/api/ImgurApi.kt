@@ -3,6 +3,7 @@ package com.appdev.epitech.epicture.api
 import android.content.Context
 import android.text.BoringLayout
 import android.util.Base64
+import android.widget.Toast
 import com.google.gson.Gson
 import com.appdev.epitech.epicture.SecretUtils
 import com.appdev.epitech.epicture.data.ConvertData
@@ -27,6 +28,7 @@ class ImgurApi {
     companion object {
         val clientId = "571a8127eb51724"
         val thumbnailMode = "b"
+
         private var imagesFavorite: MutableList<ImgurImage> = mutableListOf()
 
 
@@ -55,7 +57,7 @@ class ImgurApi {
                 //make a GET to https://httpbin.org/get and do something with response
                 val (data, error) = result
                 if (error != null) {
-                    println(error)
+                    Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
                 } else {
                     account = ConvertData.stringtoAccount(data)
                 }
@@ -99,7 +101,7 @@ class ImgurApi {
                         //make a GET to https://httpbin.org/get and do something with response
                         val (data, error) = result
                         if (error != null)
-                            println("ERROR $error")
+                            Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
                         else {
                             listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
                             val activity = context as GridActivity
@@ -112,53 +114,6 @@ class ImgurApi {
             return listImage
         }
 
-        fun getSubredditGallery(subreddit: String): Array<SubredditImage> {
-            val url = "https://api.imgur.com/3/gallery/r/$subreddit/top/week/"
-            val request = HttpUtils.createRequest(url, mapOf("Authorization" to "Client-ID ${clientId}"))
-            val response = HttpUtils.sendRequest(request)
-            val body = response.body()!!
-            val jsonResponse = body.string()
-            val imgurJson = getJsonData(jsonResponse)
-            val gson = Gson()
-            val subredditGallery = gson.fromJson(imgurJson, Array<ImgurGalleryAlbum>::class.java)
-            val subredditImages = subredditGallery.map {
-                SubredditImage(
-                        if (it.is_album) {
-                            it.cover
-                        } else {
-                            it.id
-                        },
-                        it.title,
-                        it.datetime
-                )
-            }
-
-            return subredditImages.toTypedArray()
-        }
-
-        fun getComments(image: ImgurImage): Array<Comment> {
-            val id = image.id
-            val url = "https://api.imgur.com/3/gallery/$id/comments/best"
-            val request = HttpUtils.createRequest(url, mapOf("Authorization" to "Client-ID ${clientId}"))
-            val response = HttpUtils.sendRequest(request)
-            val body = response.body()!!
-            val jsonResponse = body.string()
-            val imgurJson = getJsonData(jsonResponse)
-            val gson = Gson()
-            val imgurComments = gson.fromJson(imgurJson, Array<ImgurComment>::class.java)
-            val comments = imgurComments.map {
-                Comment(
-                        it.id,
-                        it.comment,
-                        it.datetime,
-                        it.points,
-                        it.author
-                )
-            }
-
-            return comments.toTypedArray()
-        }
-
         fun uploadImage(context: Context, file: ByteArray) {
             println(file.toString())
             val base64Encoded = Base64.encodeToString(file, Base64.DEFAULT)
@@ -166,11 +121,27 @@ class ImgurApi {
                     .response { request, response, result ->
                         val (data, error) = result
                         if (error != null)
-                            println("ERROR $error")
-                        println("Data:$data")
+                            Toast.makeText(context, "Error: Image not upload", Toast.LENGTH_SHORT).show()
+                        else
+                            Toast.makeText(context, "Success: Image upload !", Toast.LENGTH_SHORT).show()
+
                         var activity = context as GridActivity
                         activity.refreshAction()
                     }
+        }
+
+        fun deleteImage(context: Context, image: ImgurImage): Boolean {
+            "/image/${image.id}".httpDelete()
+                    .response { request, response, result ->
+                        val (data, error) = result
+                        if (error != null) {
+                            Toast.makeText(context, "Error: Image not delete", Toast.LENGTH_SHORT).show()
+                        }else {
+                            Toast.makeText(context, "Success: Image deleted !", Toast.LENGTH_SHORT).show()
+
+                        }
+                    }
+            return true
         }
 
         fun getSearch(context: Context, search: ArrayList<ParameterSearch>, sort: Int, page: Int): MutableList<ImgurImage> {
@@ -206,7 +177,7 @@ class ImgurApi {
                     .responseString { request, response, result ->
                         val (data, error) = result
                         if (error != null)
-                            println("ERROR $error")
+                            Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
                         else {
                             listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
                             val activity = context as GridActivity
@@ -222,7 +193,7 @@ class ImgurApi {
                     .responseString { request, response, result ->
                         val (data, error) = result
                         if (error != null)
-                            println("ERROR $error")
+                            Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
                         else {
                             var imgurTag = getJsonData(data.toString())
                             imgurTag = JSONObject(imgurTag).getJSONArray("items").toString()
@@ -241,9 +212,8 @@ class ImgurApi {
                     .responseString { request, response, result ->
                         val (data, error) = result
                         if (error != null)
-                            println("ERROR $error")
+                            Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
                         else {
-                            println("MY:$data")
                             listImage = ConvertData.imagesToMutableListImgurImage(data, listImage)
                             val activity = context as GridActivity
                             activity.loadGrid(listImage)
@@ -256,9 +226,9 @@ class ImgurApi {
             Fuel.post("/image/${image.id}/favorite")
                     .response { request, response, result ->
                         val (data, error) = result
-                        if (error != null) {
-                            println("ERROR $error")
-                        } else {
+                        if (error != null)
+                            Toast.makeText(context, "Error: Favorite invalided", Toast.LENGTH_SHORT).show()
+                        else {
                             val activity = context as ImageActivity
                             activity.setfavorite(!favorite)
                         }
@@ -266,28 +236,14 @@ class ImgurApi {
             return favorite
         }
 
-        fun deleteImage(image: ImgurImage): Boolean {
-            "/image/${image.id}".httpDelete()
-                    .response { request, response, result ->
-                        val (data, error) = result
-                        if (error != null) {
-                            println("ERROR $error")
-                        }
-                        else {
-                            println(data)
-                        }
-                    }
-            return true
-        }
-
         fun getMyFavoriteImage(context: Context?, mode: Boolean): MutableList<ImgurImage> {
             var listImage = mutableListOf<ImgurImage>()
             "/account/me/favorites".httpGet()
                     .responseString { request, response, result ->
                         val (data, error) = result
-                        if (error != null)
-                            println("ERROR $error")
-                        else {
+                        if (error != null && mode)
+                            Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
+                        else if(data != null) {
                             listImage = ConvertData.imagesToMutableListImgurImage(data, listImage)
                             if (mode) {
                                 val activity = context as GridActivity
