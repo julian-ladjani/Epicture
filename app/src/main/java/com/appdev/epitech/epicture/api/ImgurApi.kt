@@ -101,7 +101,10 @@ class ImgurApi {
                         else {
                             listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
                             val activity = context as GridActivity
-                            activity.loadGrid(listImage)
+                            if (page > 0)
+                                activity.loadMorePage(listImage)
+                            else
+                                activity.loadGrid(listImage)
                         }
                     }
             return listImage
@@ -154,7 +157,7 @@ class ImgurApi {
             return comments.toTypedArray()
         }
 
-        fun uploadImage(context: Context,file: ByteArray) {
+        fun uploadImage(context: Context, file: ByteArray) {
             println(file.toString())
             val base64Encoded = Base64.encodeToString(file, Base64.DEFAULT)
             "/image".httpPost(listOf(Pair("image", base64Encoded)))
@@ -191,9 +194,9 @@ class ImgurApi {
             var filter = ""
             for (search in search) {
                 if (filter == "")
-                    filter +="?${search.type}=${search.data}"
+                    filter += "?${search.type}=${search.data}"
                 else
-                    filter +="&${search.type}=${search.data}"
+                    filter += "&${search.type}=${search.data}"
             }
             url += filter
             var listImage = mutableListOf<ImgurImage>()
@@ -247,14 +250,13 @@ class ImgurApi {
             return listImage
         }
 
-        fun setImageFavorite(context:Context, image: ImgurImage, favorite : Boolean): Boolean {
+        fun setImageFavorite(context: Context, image: ImgurImage, favorite: Boolean): Boolean {
             Fuel.post("/image/${image.id}/favorite")
                     .response { request, response, result ->
                         val (data, error) = result
                         if (error != null) {
                             println("ERROR $error")
-                        }
-                        else {
+                        } else {
                             val activity = context as ImageActivity
                             activity.setfavorite(!favorite)
                         }
@@ -262,7 +264,7 @@ class ImgurApi {
             return favorite
         }
 
-        fun getMyFavoriteImage(context: Context?, mode:Boolean): MutableList<ImgurImage> {
+        fun getMyFavoriteImage(context: Context?, mode: Boolean): MutableList<ImgurImage> {
             var listImage = mutableListOf<ImgurImage>()
             "/account/me/favorites".httpGet()
                     .responseString { request, response, result ->

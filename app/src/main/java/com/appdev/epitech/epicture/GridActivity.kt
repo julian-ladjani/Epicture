@@ -26,11 +26,9 @@ import com.appdev.epitech.epicture.listeners.*
 import kotlinx.android.synthetic.main.searchbar.view.*
 import br.tiagohm.materialfilechooser.MaterialFileChooser
 import br.tiagohm.materialfilechooser.Sorter
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import java.io.File
+import androidx.recyclerview.widget.RecyclerView
+import com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener
 
 
 class GridActivity : AppCompatActivity() {
@@ -43,10 +41,13 @@ class GridActivity : AppCompatActivity() {
 
     private var searchBar: MaterialSearchBar? = null
     private var gridAdapter: ImageGridAdapter? = null
+    private var scrollListener: EndlessRecyclerViewScrollListener? = null
     private var suggestionAdapter: SearchBarSuggestionAdapter? = null
     private var images: MutableList<ImgurImage> = mutableListOf()
     private var parameterSearch: ArrayList<ParameterSearch> = arrayListOf()
     private var gridAlreadyLoad = false
+    private var maxPage = false
+    private var nbPage = 0
     private var _path: File? = Environment.getExternalStorageDirectory()
     private var currentGrid: CurrentGridEnum = CurrentGridEnum.HOME_GRID
 
@@ -92,7 +93,7 @@ class GridActivity : AppCompatActivity() {
             grid_load_progress.visibility = View.VISIBLE
         } else if (gridAlreadyLoad)
             grid_pull_to_refresh.isRefreshing = true
-        images = ImgurApi.getGallery(this, 0, 0, 0, false)
+        getGallery(0)
         currentGrid = CurrentGridEnum.HOME_GRID
     }
 
@@ -203,10 +204,28 @@ class GridActivity : AppCompatActivity() {
         )
         grid_view_images.adapter = gridAdapter
         grid_view_images.layoutManager = staggeredGridLayoutManager
+        scrollListener = object : EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
+                nbPage++
+                getGallery(nbPage)
+            }
+        }
+        grid_view_images.addOnScrollListener(scrollListener!!)
         grid_pull_to_refresh.setOnRefreshListener { GridActivityOnRefreshListener(this).onRefresh() }
     }
 
     //loader
+
+    fun loadMorePage(images: MutableList<ImgurImage>) {
+        if (images.isEmpty())
+            maxPage = true
+        else {
+            images.addAll(images)
+            gridAdapter!!.clearAdapter()
+            gridAdapter!!.setNewValues(images)
+        }
+    }
+
     fun loadGrid(images: MutableList<ImgurImage>) {
         if (gridAlreadyLoad) {
             gridAdapter!!.clearAdapter()
@@ -216,6 +235,10 @@ class GridActivity : AppCompatActivity() {
             gridAdapter!!.setNewValues(images)
             gridAlreadyLoad = true
         }
+        maxPage = false
+        nbPage = 0
+        if (scrollListener != null)
+            scrollListener!!.resetState()
         grid_pull_to_refresh.isRefreshing = false
         grid_load_progress.visibility = View.GONE
     }
@@ -242,6 +265,12 @@ class GridActivity : AppCompatActivity() {
     fun getSearchBar(): MaterialSearchBar {
         return searchBar!!
     }
+
+    fun getGallery(page: Int) {
+        images = ImgurApi.getGallery(this, 0, 0, page, false)
+    }
+
+    //other
 
     fun searchBarButtonClickAction() {
         if (currentGrid == CurrentGridEnum.UPLOAD_GRID)
