@@ -27,9 +27,6 @@ import kotlinx.android.synthetic.main.searchbar.view.*
 import br.tiagohm.materialfilechooser.MaterialFileChooser
 import br.tiagohm.materialfilechooser.Sorter
 import java.io.File
-import androidx.recyclerview.widget.RecyclerView
-import com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener
-
 
 class GridActivity : AppCompatActivity() {
 
@@ -41,7 +38,6 @@ class GridActivity : AppCompatActivity() {
 
     private var searchBar: MaterialSearchBar? = null
     private var gridAdapter: ImageGridAdapter? = null
-    private var scrollListener: EndlessRecyclerViewScrollListener? = null
     private var suggestionAdapter: SearchBarSuggestionAdapter? = null
     private var images: MutableList<ImgurImage> = mutableListOf()
     private var parameterSearch: ArrayList<ParameterSearch> = arrayListOf()
@@ -192,7 +188,7 @@ class GridActivity : AppCompatActivity() {
 
     private fun createGrid() {
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
-
+        grid_view_images.layoutManager = staggeredGridLayoutManager
         gridAdapter = ImageGridAdapter(
                 this,
                 mutableListOf<ImgurImage>().apply { addAll(images) },
@@ -200,23 +196,19 @@ class GridActivity : AppCompatActivity() {
                     override fun onItemClick(item: ImgurImage) {
                         imageClickAction(item)
                     }
-                }
-        )
+                },
+                grid_view_images)
         grid_view_images.adapter = gridAdapter
-        grid_view_images.layoutManager = staggeredGridLayoutManager
-        scrollListener = object : EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
-                if (currentGrid == CurrentGridEnum.HOME_GRID) {
-                    nbPage++
-                    getGallery(nbPage)
-                }
-            }
-        }
-        grid_view_images.addOnScrollListener(scrollListener!!)
         grid_pull_to_refresh.setOnRefreshListener { GridActivityOnRefreshListener(this).onRefresh() }
     }
 
     //loader
+    fun loadMorePageAction() {
+        if (currentGrid == GridActivity.CurrentGridEnum.HOME_GRID) {
+            nbPage++
+            getGallery(nbPage)
+        }
+    }
 
     fun loadMorePage(images: MutableList<ImgurImage>) {
         if (images.isEmpty())
@@ -239,8 +231,8 @@ class GridActivity : AppCompatActivity() {
         }
         maxPage = false
         nbPage = 0
-        if (scrollListener != null)
-            scrollListener!!.resetState()
+        if (gridAdapter != null)
+            gridAdapter!!.resetScrollManager()
         grid_pull_to_refresh.isRefreshing = false
         grid_load_progress.visibility = View.GONE
     }

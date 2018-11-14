@@ -44,17 +44,6 @@
                     android:layout_height="match_parent"
                     app:column_count="2"
                     app:item_margin="8dp" />
-
-                <ProgressBar
-                    android:id="@+id/grid_load_more_progress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp" />
-
             </LinearLayout>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
