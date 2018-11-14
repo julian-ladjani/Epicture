@@ -206,8 +206,10 @@ class GridActivity : AppCompatActivity() {
         grid_view_images.layoutManager = staggeredGridLayoutManager
         scrollListener = object : EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
-                nbPage++
-                getGallery(nbPage)
+                if (currentGrid == CurrentGridEnum.HOME_GRID) {
+                    nbPage++
+                    getGallery(nbPage)
+                }
             }
         }
         grid_view_images.addOnScrollListener(scrollListener!!)
