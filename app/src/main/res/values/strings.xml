@@ -72,6 +72,24 @@
         <item>Hot</item>
         <item>User</item>
     </string-array>
+    <string-array name="imgur_sorts">
+        <item>Viral</item>
+        <item>Top</item>
+        <item>Time</item>
+    </string-array>
+    <string-array name="imgur_date_range">
+        <item>Day</item>
+        <item>Week</item>
+        <item>Month</item>
+        <item>Year</item>
+        <item>All</item>
+    </string-array>
+    <string-array name="imgur_sorts_user_section">
+        <item>Viral</item>
+        <item>Top</item>
+        <item>Time</item>
+        <item>Rising</item>
+    </string-array>
     <string-array name="grids">
         <item>Home</item>
         <item>Favorite</item>
