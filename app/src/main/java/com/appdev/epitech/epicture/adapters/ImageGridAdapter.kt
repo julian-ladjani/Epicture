@@ -96,6 +96,10 @@ class ImageGridAdapter(private val mContext: Context,
             val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
             layoutParams.isFullSpan = true
             val loadingViewHolder = holder as ViewHolderLoading
+            if ((mContext as GridActivity).canLoadMorePage())
+                loadingViewHolder.progressBar!!.visibility = View.VISIBLE
+            else
+                loadingViewHolder.progressBar!!.visibility = View.GONE
             loadingViewHolder.progressBar!!.isIndeterminate = true
         }
     }

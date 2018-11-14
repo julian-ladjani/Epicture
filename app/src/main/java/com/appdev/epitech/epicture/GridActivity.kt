@@ -16,10 +16,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
+import android.widget.ScrollView
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import com.appdev.epitech.epicture.api.ImgurApi
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.appdev.epitech.epicture.entities.ParameterSearch
 import com.appdev.epitech.epicture.listeners.*
@@ -46,8 +48,11 @@ class GridActivity : AppCompatActivity() {
     private var nbPage = 0
     private var _path: File? = Environment.getExternalStorageDirectory()
     private var currentGrid: CurrentGridEnum = CurrentGridEnum.HOME_GRID
+    var recyclerViewTouchDisabler: RecyclerView.OnItemTouchListener = RecyclerViewTouchDisabler()
 
     fun refreshAction() {
+        grid_view_images.scrollToPosition(grid_load_progress.top)
+        grid_view_images.addOnItemTouchListener(recyclerViewTouchDisabler)
         if (currentGrid == CurrentGridEnum.HOME_GRID)
             homeGridAction()
         if (currentGrid == CurrentGridEnum.FAVORITE_GRID)
@@ -211,12 +216,14 @@ class GridActivity : AppCompatActivity() {
     }
 
     fun loadMorePage(images: MutableList<ImgurImage>) {
-        if (images.isEmpty())
-            maxPage = true
-        else {
-            images.addAll(images)
-            gridAdapter!!.clearAdapter()
-            gridAdapter!!.setNewValues(images)
+        if (canLoadMorePage()) {
+            if (images.isEmpty())
+                maxPage = true
+            else {
+                images.addAll(images)
+                gridAdapter!!.clearAdapter()
+                gridAdapter!!.setNewValues(images)
+            }
         }
     }
 
@@ -235,6 +242,7 @@ class GridActivity : AppCompatActivity() {
             gridAdapter!!.resetScrollManager()
         grid_pull_to_refresh.isRefreshing = false
         grid_load_progress.visibility = View.GONE
+        grid_view_images.removeOnItemTouchListener(recyclerViewTouchDisabler)
     }
 
     //dispatcher
@@ -262,6 +270,12 @@ class GridActivity : AppCompatActivity() {
 
     fun getGallery(page: Int) {
         images = ImgurApi.getGallery(this, 0, 0, page, false)
+    }
+
+    fun canLoadMorePage(): Boolean {
+        if (currentGrid == CurrentGridEnum.HOME_GRID && !maxPage && gridAlreadyLoad)
+            return true
+        return false
     }
 
     //other
