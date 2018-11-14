@@ -266,7 +266,6 @@ class ImgurApi {
             return favorite
         }
 
-<<<<<<< HEAD
         fun deleteImage(image: ImgurImage): Boolean {
             "/image/${image.id}".httpDelete()
                     .response { request, response, result ->
@@ -281,10 +280,7 @@ class ImgurApi {
             return true
         }
 
-        fun getMyFavoriteImage(context: Context?, mode:Boolean): MutableList<ImgurImage> {
-=======
         fun getMyFavoriteImage(context: Context?, mode: Boolean): MutableList<ImgurImage> {
->>>>>>> 21e40b34b9b6e0ab5d15f9934cecd736184d821a
             var listImage = mutableListOf<ImgurImage>()
             "/account/me/favorites".httpGet()
                     .responseString { request, response, result ->
