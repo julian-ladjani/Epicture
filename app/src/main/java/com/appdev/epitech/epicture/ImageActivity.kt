@@ -49,6 +49,10 @@ class ImageActivity : AppCompatActivity() {
         downloadButton.setOnClickListener {
             downloadAction(false)
         }
+        deleteButton.setOnClickListener {
+            ImgurApi.deleteImage(this, image!!)
+            finish()
+        }
         favoriteButton.setOnClickListener {
             ImgurApi.setImageFavorite(this, image!!, favoriteImage)
             ImgurApi.reloadFavorite()
