@@ -24,11 +24,13 @@ import android.media.MediaPlayer
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import kotlinx.android.synthetic.main.toolbar.view.*
 
 
 class ImageActivity : AppCompatActivity() {
 
     private var image: ImgurImage? = null
+    private var myPicture: Boolean? = false
     private var favoriteImage: Boolean = false
 
 
@@ -36,6 +38,9 @@ class ImageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image)
         image = intent.getParcelableExtra("image")
+        myPicture = intent.getBooleanExtra("myImage", false)
+        if (myPicture!!)
+            deleteButton.visibility = View.VISIBLE
         var filtered = ImgurApi.getFavorite().filter { x -> x.id == image!!.id }
         setfavorite(filtered.count() != 0)
         shareButton.setOnClickListener {
@@ -52,7 +57,7 @@ class ImageActivity : AppCompatActivity() {
             mp.isLooping = true
         }
         viewCounter.title = image!!.views
-        toolbar.title = image!!.title
+        toolbar.title.text = image!!.title
         if (image!!.link!!.substringAfterLast(".") != "mp4") {
             photo_view.visibility = View.VISIBLE
             VideoView.visibility = View.INVISIBLE
@@ -64,7 +69,7 @@ class ImageActivity : AppCompatActivity() {
                                 p0: GlideException?,
                                 p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?,
                                 p3: Boolean): Boolean {
-                            media_load_progress.progressDrawable.setColorFilter(
+                            media_load_progress.indeterminateDrawable.setColorFilter(
                                     resources.getColor(R.color.red), PorterDuff.Mode.SRC_IN)
                             return false
                         }
@@ -140,6 +145,10 @@ class ImageActivity : AppCompatActivity() {
             val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             manager.enqueue(request)
         }
+    }
+
+    fun backButtonAction(view: View) {
+        onBackPressed()
     }
 
     fun shareAction() {

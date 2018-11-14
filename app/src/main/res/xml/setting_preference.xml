@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference android:title="Your Name"
-        android:key="username"
-        android:summary="Please provide your username"></EditTextPreference>
-    <CheckBoxPreference android:title="Application Updates"
-        android:defaultValue="false"
-        android:summary="This option if selected will allow the application to check for latest versions."
-        android:key="applicationUpdates" />
+    <PreferenceCategory android:title="Preference category">
+
+        <ListPreference
+            android:defaultValue="Home"
+            android:entries="@array/grids"
+            android:entryValues="@array/grids"
+            android:key="defaultGrid"
+            android:title="Default Grid" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Content Filtering">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/asterisco"
+            android:key="nsfwEnabled"
+            android:title="Enable Not Safe For Work" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

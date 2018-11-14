@@ -6,25 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
+    <include
         android:id="@+id/toolbar"
+        layout="@layout/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@color/colorPrimaryDark"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:subtitleTextAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle"
-        app:title="Image"
-        app:titleTextAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -121,18 +110,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="14dp"
+        android:layout_marginTop="64dp"
         android:clickable="false"
         app:floating_background_color="@color/searchBarPlaceholderColor"
         app:floating_left_icon="@android:drawable/ic_menu_view"
         app:floating_title=""
         app:floating_title_color="@android:color/white"
         app:layout_behavior="ru.dimorinny.floatingtextbutton.behavior.SnackbarBehavior"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintHorizontal_bias="0.049"
         app:layout_constraintStart_toStartOf="parent"
-        tools:floating_title="" >
+        app:layout_constraintTop_toTopOf="parent"
+        tools:floating_title="">
+
+
+    </ru.dimorinny.floatingtextbutton.FloatingTextButton>
+
+    <ru.dimorinny.floatingtextbutton.FloatingTextButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="false"
+        android:visibility="gone"
+        app:floating_background_color="@color/searchBarPlaceholderColor"
+        app:floating_left_icon="@drawable/ic_delete_icon"
+        app:floating_title=""
+        app:floating_title_color="@android:color/holo_red_dark"
+        app:layout_behavior="ru.dimorinny.floatingtextbutton.behavior.SnackbarBehavior"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:floating_title="">
 
     </ru.dimorinny.floatingtextbutton.FloatingTextButton>
 

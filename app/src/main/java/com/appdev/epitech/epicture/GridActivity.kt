@@ -26,6 +26,10 @@ import com.appdev.epitech.epicture.listeners.*
 import kotlinx.android.synthetic.main.searchbar.view.*
 import br.tiagohm.materialfilechooser.MaterialFileChooser
 import br.tiagohm.materialfilechooser.Sorter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import java.io.File
 
 
@@ -57,7 +61,7 @@ class GridActivity : AppCompatActivity() {
 
     fun settingAction() {
         val intent = Intent(this,
-                SettingActivity::class.java)
+                SettingsActivity::class.java)
         startActivity(intent)
     }
 
@@ -71,7 +75,7 @@ class GridActivity : AppCompatActivity() {
     }
 
     fun uploadGridAction() {
-        if (currentGrid !== CurrentGridEnum.UPLOAD_GRID) {
+        if (currentGrid !== CurrentGridEnum.UPLOAD_GRID || !gridAlreadyLoad) {
             searchBarVisibility(false)
             searchBarUploadMode()
             grid_load_progress.visibility = View.VISIBLE
@@ -82,7 +86,7 @@ class GridActivity : AppCompatActivity() {
     }
 
     fun homeGridAction() {
-        if (currentGrid !== CurrentGridEnum.HOME_GRID) {
+        if (currentGrid !== CurrentGridEnum.HOME_GRID || !gridAlreadyLoad) {
             searchBarVisibility(true)
             searchBarHomeMode()
             grid_load_progress.visibility = View.VISIBLE
@@ -93,7 +97,7 @@ class GridActivity : AppCompatActivity() {
     }
 
     fun favoriteGridAction() {
-        if (currentGrid !== CurrentGridEnum.FAVORITE_GRID) {
+        if (currentGrid !== CurrentGridEnum.FAVORITE_GRID || !gridAlreadyLoad) {
             searchBarVisibility(false)
             grid_load_progress.visibility = View.VISIBLE
         } else if (gridAlreadyLoad)
@@ -141,7 +145,7 @@ class GridActivity : AppCompatActivity() {
                     .sorter(Sorter.ByNewestModification)
                     .onSelectedFilesListener {
                         if (it.isNotEmpty()) {
-                            ImgurApi.uploadImage(it[0].readBytes())
+                            ImgurApi.uploadImage(this, it[0].readBytes())
                             _path = it[0].parentFile
                         }
                     }
@@ -151,6 +155,8 @@ class GridActivity : AppCompatActivity() {
 
     private fun imageClickAction(image: ImgurImage) {
         val i = Intent(this, ImageActivity::class.java)
+        if (currentGrid == CurrentGridEnum.UPLOAD_GRID)
+            i.putExtra("myImage", true)
         i.putExtra("image", image)
         startActivity(i)
     }
