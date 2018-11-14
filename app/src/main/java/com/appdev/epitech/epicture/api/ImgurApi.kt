@@ -10,9 +10,11 @@ import com.appdev.epitech.epicture.entities.*
 import com.appdev.epitech.epicture.GridActivity
 import com.appdev.epitech.epicture.ImageActivity
 import com.appdev.epitech.epicture.adapters.ImageGridAdapter
+import com.appdev.epitech.epicture.listeners.GridActivityOnRefreshListener
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.android.core.Json
 import com.github.kittinunf.fuel.core.FuelManager
+import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import okhttp3.MultipartBody
@@ -260,6 +262,20 @@ class ImgurApi {
                         }
                     }
             return favorite
+        }
+
+        fun deleteImage(image: ImgurImage): Boolean {
+            "/image/${image.id}".httpDelete()
+                    .response { request, response, result ->
+                        val (data, error) = result
+                        if (error != null) {
+                            println("ERROR $error")
+                        }
+                        else {
+                            println(data)
+                        }
+                    }
+            return true
         }
 
         fun getMyFavoriteImage(context: Context?, mode:Boolean): MutableList<ImgurImage> {
