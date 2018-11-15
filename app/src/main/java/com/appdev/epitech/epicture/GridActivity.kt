@@ -1,6 +1,8 @@
 package com.appdev.epitech.epicture
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +18,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
+import android.util.AttributeSet
 import android.widget.ScrollView
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
@@ -48,17 +51,23 @@ class GridActivity : AppCompatActivity() {
     private var nbPage = 0
     private var _path: File? = Environment.getExternalStorageDirectory()
     private var currentGrid: CurrentGridEnum = CurrentGridEnum.HOME_GRID
-    var recyclerViewTouchDisabler: RecyclerView.OnItemTouchListener = RecyclerViewTouchDisabler()
+    private var recyclerViewTouchDisabler: RecyclerView.OnItemTouchListener = RecyclerViewTouchDisabler()
 
     fun refreshAction() {
-        grid_view_images.scrollToPosition(grid_load_progress.top)
         grid_view_images.addOnItemTouchListener(recyclerViewTouchDisabler)
+        grid_view_images.scrollToPosition(grid_load_progress.top)
         if (currentGrid == CurrentGridEnum.HOME_GRID)
             homeGridAction()
         if (currentGrid == CurrentGridEnum.FAVORITE_GRID)
             favoriteGridAction()
         if (currentGrid == CurrentGridEnum.UPLOAD_GRID)
             uploadGridAction()
+    }
+
+    fun filterAction() {
+        val intent = Intent(this,
+                FilterActivity::class.java)
+        startActivity(intent)
     }
 
     fun settingAction() {
@@ -160,7 +169,7 @@ class GridActivity : AppCompatActivity() {
         if (currentGrid == CurrentGridEnum.UPLOAD_GRID)
             i.putExtra("myImage", true)
         i.putExtra("image", image)
-        startActivity(i)
+        startActivityForResult(i, 1)
     }
 
     //creators
@@ -176,6 +185,7 @@ class GridActivity : AppCompatActivity() {
         grid_bottom_navigation.setOnMenuItemClickListener(BottomNavigationOnMenuClickListener(this))
         refreshAction()
     }
+
 
     private fun createSearchBar() {
         suggestionAdapter = SearchBarSuggestionAdapter(layoutInflater)
@@ -278,12 +288,17 @@ class GridActivity : AppCompatActivity() {
         return false
     }
 
+    fun getSuggestionAdapter(): SearchBarSuggestionAdapter {
+        return suggestionAdapter!!
+    }
+
     //other
 
     fun searchBarButtonClickAction() {
         if (currentGrid == CurrentGridEnum.UPLOAD_GRID)
             uploadAction(false)
-
+        else if (currentGrid == CurrentGridEnum.HOME_GRID)
+            filterAction()
     }
 
     private fun searchBarHomeMode() {
@@ -310,15 +325,13 @@ class GridActivity : AppCompatActivity() {
         }
     }
 
-    fun getSuggestionAdapter(): SearchBarSuggestionAdapter {
-        return suggestionAdapter!!
-    }
-
+    //saver
     override fun onSaveInstanceState(savedInstanceState: Bundle?) {
         super.onSaveInstanceState(savedInstanceState)
         savedInstanceState!!.putInt("Grid", currentGrid.ordinal)
     }
 
+    //permission requester
     fun haveStoragePermission(): Boolean {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -340,6 +353,17 @@ class GridActivity : AppCompatActivity() {
                     uploadAction(true)
                 }
                 return
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                val result = data!!.getBooleanExtra("deletePicture", false)
+                val deleteImage = data.getParcelableExtra<ImgurImage>("image")
+                if (result)
+                    ImgurApi.deleteImage(this, deleteImage)
             }
         }
     }

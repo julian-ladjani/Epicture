@@ -138,7 +138,8 @@ class ImgurApi {
                             Toast.makeText(context, "Error: Image not delete", Toast.LENGTH_SHORT).show()
                         }else {
                             Toast.makeText(context, "Success: Image deleted !", Toast.LENGTH_SHORT).show()
-
+                            var activity = context as GridActivity
+                            activity.refreshAction()
                         }
                     }
             return true

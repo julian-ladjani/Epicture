@@ -1,6 +1,7 @@
 package com.appdev.epitech.epicture
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
@@ -50,7 +51,10 @@ class ImageActivity : AppCompatActivity() {
             downloadAction(false)
         }
         deleteButton.setOnClickListener {
-            ImgurApi.deleteImage(this, image!!)
+            val returnIntent = Intent()
+            returnIntent.putExtra("deletePicture", true)
+            returnIntent.putExtra("image", image!!)
+            setResult(Activity.RESULT_OK,returnIntent)
             finish()
         }
         favoriteButton.setOnClickListener {

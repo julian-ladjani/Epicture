@@ -7,8 +7,7 @@
     android:layout_margin="8dp"
     android:background="@drawable/rounded_corner"
     android:isScrollContainer="true"
-    android:padding="0dp"
-    tools:context=".MainActivity">
+    android:padding="0dp">
 
     <com.etsy.android.grid.util.DynamicHeightImageView
         android:id="@+id/imageView"

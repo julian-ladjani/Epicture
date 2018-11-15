@@ -27,10 +27,10 @@
         <activity android:name=".AuthenticationActivity" />
         <activity android:name=".GridActivity" />
         <activity android:name=".ImageActivity" />
-        <activity android:name=".SettingActivity" />
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
+        <activity android:name=".FilterActivity" />
     </application>
 
 </manifest>
