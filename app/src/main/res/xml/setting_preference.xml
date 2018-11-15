@@ -12,7 +12,7 @@
     <PreferenceCategory android:title="Content Filtering">
         <SwitchPreference
             android:defaultValue="false"
-            android:icon="@drawable/asterisco"
+            android:icon="@drawable/animated_search_to_back"
             android:key="nsfwEnabled"
             android:title="Enable Not Safe For Work" />
     </PreferenceCategory>

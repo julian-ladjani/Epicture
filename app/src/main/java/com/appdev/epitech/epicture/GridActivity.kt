@@ -29,8 +29,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.appdev.epitech.epicture.entities.ParameterSearch
 import com.appdev.epitech.epicture.listeners.*
 import kotlinx.android.synthetic.main.searchbar.view.*
-import br.tiagohm.materialfilechooser.MaterialFileChooser
-import br.tiagohm.materialfilechooser.Sorter
 import java.io.File
 
 class GridActivity : AppCompatActivity() {
@@ -128,39 +126,10 @@ class GridActivity : AppCompatActivity() {
 
     fun uploadAction(permissionResquested: Boolean) {
         if (permissionResquested || haveStoragePermission()) {
-            /*ChooserDialog().with(this)
-                    .withFilter(false, false, "jpg", "jpeg", "png", "gif", "pdf", "apng", "tiff")
-                    .enableOptions(true)
-                    .withStartFile(_path!!)
-                    .withResources(R.string.choose_file, R.string.title_choose, R.string.dialog_cancel)
-                    .withChosenListener {
-                        path, pathFile -> _path = path
-                        ImgurApi.uploadImage(this, pathFile.readBytes())
-                    }
-                    .build()
-                    .show()*/
-            MaterialFileChooser(this,
-                    allowBrowsing = true,
-                    allowCreateFolder = false,
-                    allowMultipleFiles = false,
-                    allowSelectFolder = false,
-                    minSelectedFiles = 1,
-                    maxSelectedFiles = 3,
-                    showFiles = true,
-                    showFoldersFirst = true,
-                    showFolders = true,
-                    showHiddenFiles = false,
-                    initialFolder = _path!!,
-                    restoreFolder = false)
-                    .title("Select an image or a video")
-                    .sorter(Sorter.ByNewestModification)
-                    .onSelectedFilesListener {
-                        if (it.isNotEmpty()) {
-                            ImgurApi.uploadImage(this, it[0].readBytes())
-                            _path = it[0].parentFile
-                        }
-                    }
-                    .show()
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(Intent.createChooser(intent, "Choose Picture"), 2)
         }
     }
 
@@ -366,5 +335,15 @@ class GridActivity : AppCompatActivity() {
                     ImgurApi.deleteImage(this, deleteImage)
             }
         }
+        if (requestCode == 2) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                val selectedImageUri = data.data
+
+                val stream = contentResolver.openInputStream(selectedImageUri)
+
+                ImgurApi.uploadImage(this, stream.readBytes())
+            }
+        }
     }
+
 }

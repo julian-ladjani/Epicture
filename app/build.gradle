@@ -65,7 +65,6 @@ dependencies {
     implementation 'com.github.kittinunf.fuel:fuel-forge:1.16.0'
     implementation 'com.github.julian-ladjani:Material-BottomNavigation:2.0.1'
     implementation 'com.etsy.android.grid:library:1.0.5'
-    implementation 'com.github.tiagohm:MaterialFileChooser:0.3.0'
     implementation 'co.lujun:androidtagview:1.1.4'
 }
 
