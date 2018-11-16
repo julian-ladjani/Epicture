@@ -77,9 +77,9 @@ class ImageActivity : AppCompatActivity() {
                                 p0: GlideException?,
                                 p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?,
                                 p3: Boolean): Boolean {
-                            media_load_progress.indeterminateDrawable.setColorFilter(
-                                    resources.getColor(R.color.red), PorterDuff.Mode.SRC_IN)
-                            return false
+                                    media_load_progress.indeterminateDrawable.setColorFilter(
+                                        resources.getColor(R.color.red), PorterDuff.Mode.SRC_IN)
+                                    return false
                         }
 
                         override fun onResourceReady(

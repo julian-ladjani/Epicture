@@ -30,6 +30,7 @@ class ImgurApi {
         val thumbnailMode = "b"
 
         private var imagesFavorite: MutableList<ImgurImage> = mutableListOf()
+        private var parameterSearch = ParameterSearch(0,0, 0, arrayListOf())
 
 
         private fun getJsonData(jsonResponse: String): String {
@@ -44,6 +45,10 @@ class ImgurApi {
 
         fun getFavorite(): MutableList<ImgurImage> {
             return imagesFavorite
+        }
+
+        fun getParameterSearch(): ParameterSearch {
+            return parameterSearch
         }
 
         fun reloadFavorite() {
@@ -65,31 +70,31 @@ class ImgurApi {
             return account
         }
 
-        fun getGallery(context: Context, section: Int, sort: Int, page: Int, nsfwEnabled: Boolean): MutableList<ImgurImage> {
-            val sectionParam = when (section) {
+        fun getGallery(context: Context, page: Int, nsfwEnabled: Boolean = true): MutableList<ImgurImage> {
+            val sectionParam = when (parameterSearch.section) {
                 0 -> "hot"
                 1 -> "top"
                 2 -> "user"
                 else -> "hot"
             }
 
-            val sortParam = when (sort) {
+            val sortParam = when (parameterSearch.sort) {
                 0 -> "viral"
                 1 -> "time"
                 else -> "top" // Top (x)
             }
 
-            val timeWindow = when (sort) {
-                2 -> "day"
-                3 -> "week"
-                4 -> "month"
-                5 -> "year"
-                6 -> "all"
+            val timeWindow = when (parameterSearch.time) {
+                1 -> "day"
+                2 -> "week"
+                3 -> "month"
+                4 -> "year"
+                5 -> "all"
                 else -> ""
             }
 
             var url = "/gallery/$sectionParam/$sortParam/$page"
-            if (!timeWindow.equals("")) {
+            if (!timeWindow.equals("") && sortParam == "top") {
                 url += "$timeWindow/"
             }
 
@@ -145,19 +150,21 @@ class ImgurApi {
             return true
         }
 
-        fun getSearch(context: Context, search: ArrayList<ParameterSearch>, sort: Int, page: Int): MutableList<ImgurImage> {
-            val sortParam = when (sort) {
+        fun getSearch(context: Context, search: String, page: Int): MutableList<ImgurImage> {
+            parameterSearch.query.removeIf { x -> x.type == "q" }
+            parameterSearch.query.add(ParameterQuery("q", search))
+            val sortParam = when (parameterSearch.sort) {
                 0 -> "viral"
                 1 -> "time"
                 else -> "top" // Top (x)
             }
 
-            val timeWindow = when (sort) {
-                2 -> "day"
-                3 -> "week"
-                4 -> "month"
-                5 -> "year"
-                6 -> "all"
+            val timeWindow = when (parameterSearch.time) {
+                0 -> "day"
+                1 -> "week"
+                2 -> "month"
+                3 -> "year"
+                4 -> "all"
                 else -> ""
             }
 
@@ -166,7 +173,7 @@ class ImgurApi {
                 url += timeWindow
             }
             var filter = ""
-            for (search in search) {
+            for (search in parameterSearch.query) {
                 if (filter == "")
                     filter += "?${search.type}=${search.data}"
                 else

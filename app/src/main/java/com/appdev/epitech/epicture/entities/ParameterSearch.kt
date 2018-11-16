@@ -5,6 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class ParameterSearch (
-        val type :String = "q",
-        val data :String = "cat"
+        var section :Int = 0,
+        var sort :Int = 0,
+        var time :Int = 0,
+        var query: ArrayList<ParameterQuery>
 ) : Parcelable

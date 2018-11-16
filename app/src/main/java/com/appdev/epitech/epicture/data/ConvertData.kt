@@ -38,13 +38,13 @@ class ConvertData {
 
         fun makeImgurImage(image: ImgurImage, titleAlbum:String, listImage: MutableList<ImgurImage>){
             var title = ""
-            if (image.title == null || image.title == "untitled") {
+            if (image!!.title == null || image!!.title == "untitled") {
                 title = titleAlbum
             } else {
                 title = image.title
             }
             var description = ""
-            if (image.description != null) {
+            if (image!!.description != null) {
                 description = image.description
             }
             var thumbnailLink = image.link

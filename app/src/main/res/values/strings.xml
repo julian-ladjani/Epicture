@@ -68,14 +68,14 @@
     <string name="reload_menu_title">Reload</string>
     <string name="record_menu_title">Record</string>
     <string-array name="imgur_sections">
-        <item>Top</item>
         <item>Hot</item>
+        <item>Top</item>
         <item>User</item>
     </string-array>
     <string-array name="imgur_sorts">
         <item>Viral</item>
-        <item>Top</item>
         <item>Time</item>
+        <item>Top</item>
     </string-array>
     <string-array name="imgur_date_range">
         <item>Day</item>

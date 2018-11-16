@@ -26,6 +26,7 @@ import com.appdev.epitech.epicture.api.ImgurApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.appdev.epitech.epicture.entities.ParameterQuery
 import com.appdev.epitech.epicture.entities.ParameterSearch
 import com.appdev.epitech.epicture.listeners.*
 import kotlinx.android.synthetic.main.searchbar.view.*
@@ -43,7 +44,6 @@ class GridActivity : AppCompatActivity() {
     private var gridAdapter: ImageGridAdapter? = null
     private var suggestionAdapter: SearchBarSuggestionAdapter? = null
     private var images: MutableList<ImgurImage> = mutableListOf()
-    private var parameterSearch: ArrayList<ParameterSearch> = arrayListOf()
     private var gridAlreadyLoad = false
     private var maxPage = false
     private var nbPage = 0
@@ -116,12 +116,10 @@ class GridActivity : AppCompatActivity() {
     }
 
     fun searchAction(text: String) {
-        parameterSearch.clear()
-        parameterSearch.add(ParameterSearch("q", text))
         images = if (text[0] == '#' && text.length >= 2)
             ImgurApi.getSearchTag(this, text.substring(1))
         else
-            ImgurApi.getSearch(this, parameterSearch, 0, 0)
+            ImgurApi.getSearch(this, text,0)
     }
 
     fun uploadAction(permissionResquested: Boolean) {
@@ -248,7 +246,7 @@ class GridActivity : AppCompatActivity() {
     }
 
     fun getGallery(page: Int) {
-        images = ImgurApi.getGallery(this, 0, 0, page, false)
+        images = ImgurApi.getGallery(this, page, false)
     }
 
     fun canLoadMorePage(): Boolean {

@@ -3,7 +3,6 @@ package com.appdev.epitech.epicture
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.appdev.epitech.epicture.api.ImgurApi
 import com.github.kittinunf.fuel.core.FuelManager
 
 class MainActivity : AppCompatActivity() {
@@ -20,7 +19,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             Intent(this, NoAuthActivity::class.java)
         }
-
         startActivity(intent)
         finish()
     }
