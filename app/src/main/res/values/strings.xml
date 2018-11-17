@@ -102,6 +102,7 @@
         <item>Medium</item>
         <item>Big</item>
         <item>Large</item>
+        <item>Huge</item>
     </string-array>
     <string-array name="grids">
         <item>Home</item>

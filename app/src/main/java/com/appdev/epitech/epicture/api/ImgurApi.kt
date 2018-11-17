@@ -98,7 +98,7 @@ class ImgurApi {
                 url += "$timeWindow/"
             }
             url +=page
-            url += "?mature=$nsfwEnabled&album_previews=true"
+            url += "?mature=${parameterSearch.mature}&album_previews=true"
             println("URL:$url")
             var listImage = mutableListOf<ImgurImage>()
             url.httpGet()
@@ -150,16 +150,39 @@ class ImgurApi {
             return true
         }
 
+        fun getfilter(query:String): String {
+            var filter = "?q=$query"
+            filter += when (parameterSearch.size) {
+                -1 -> ""
+                0 -> ""
+                1 -> "&q_size_px=small"
+                2 -> "&q_size_px=medium"
+                3 -> "&q_size_px=big"
+                4 -> "&q_size_px=large"
+                5 -> "&q_size_px=huge"
+                else -> "" // Top (x)
+            }
+            filter += when (parameterSearch.type) {
+                -1 -> ""
+                0 -> ""
+                1 -> "&q_type=jpg"
+                2 -> "&q_type=png"
+                3 -> "&q_type=gif"
+                else -> "" // Top (x)
+            }
+            if (parameterSearch.tags.count() != 0)
+                filter += "&q_tags=${parameterSearch.tags.joinToString()}"
+            return filter
+        }
+
         fun getSearch(context: Context, search: String, page: Int): MutableList<ImgurImage> {
-            parameterSearch.query.removeIf { x -> x.type == "q" }
-            parameterSearch.query.add(ParameterQuery("q", search))
-            val sortParam = when (parameterSearch.sort) {
+            val sortParam = when (parameterSearch.sortSearch) {
                 0 -> "viral"
                 1 -> "time"
                 else -> "top" // Top (x)
             }
 
-            val timeWindow = when (parameterSearch.time) {
+            val timeWindow = when (parameterSearch.timeSearch) {
                 0 -> "day"
                 1 -> "week"
                 2 -> "month"
@@ -173,14 +196,8 @@ class ImgurApi {
                 url += "$timeWindow/"
             }
             url +=page
-            var filter = ""
-            for (search in parameterSearch.query) {
-                if (filter == "")
-                    filter += "?${search.type}=${search.data}"
-                else
-                    filter += "&${search.type}=${search.data}"
-            }
-            url += filter
+            url += getfilter(search)
+            println(url)
             var listImage = mutableListOf<ImgurImage>()
             url.httpGet()
                     .responseString { request, response, result ->

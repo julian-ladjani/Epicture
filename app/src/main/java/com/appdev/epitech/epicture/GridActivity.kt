@@ -2,7 +2,6 @@ package com.appdev.epitech.epicture
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -18,16 +17,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
-import android.util.AttributeSet
-import android.widget.ScrollView
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import com.appdev.epitech.epicture.api.ImgurApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.appdev.epitech.epicture.entities.ParameterQuery
-import com.appdev.epitech.epicture.entities.ParameterSearch
 import com.appdev.epitech.epicture.listeners.*
 import kotlinx.android.synthetic.main.searchbar.view.*
 import java.io.File
