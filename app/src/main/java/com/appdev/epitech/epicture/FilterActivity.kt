@@ -29,6 +29,10 @@ class FilterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         sectionList.onItemSelectedListener = this
         sortList.onItemSelectedListener = this
         dateRangeList.onItemSelectedListener = this
+        searchSortList.onItemSelectedListener = this
+        searchDateRangeList.onItemSelectedListener = this
+        formatList.onItemSelectedListener = this
+        sizeList.onItemSelectedListener = this
         hideCorrectItems()
     }
 
