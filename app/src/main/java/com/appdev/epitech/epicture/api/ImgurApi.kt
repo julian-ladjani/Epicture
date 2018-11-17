@@ -30,7 +30,7 @@ class ImgurApi {
         val thumbnailMode = "b"
 
         private var imagesFavorite: MutableList<ImgurImage> = mutableListOf()
-        private var parameterSearch = ParameterSearch(0,0, 0, arrayListOf())
+        private var parameterSearch = ParameterSearch()
 
 
         private fun getJsonData(jsonResponse: String): String {
@@ -85,19 +85,19 @@ class ImgurApi {
             }
 
             val timeWindow = when (parameterSearch.time) {
-                1 -> "day"
-                2 -> "week"
-                3 -> "month"
-                4 -> "year"
-                5 -> "all"
+                0 -> "day"
+                1 -> "week"
+                2 -> "month"
+                3 -> "year"
+                4 -> "all"
                 else -> ""
             }
 
-            var url = "/gallery/$sectionParam/$sortParam/$page"
-            if (!timeWindow.equals("") && sortParam == "top") {
+            var url = "/gallery/$sectionParam/$sortParam/"
+            if (!timeWindow.equals("") && sectionParam == "top") {
                 url += "$timeWindow/"
             }
-
+            url +=page
             url += "?mature=$nsfwEnabled&album_previews=true"
             println("URL:$url")
             var listImage = mutableListOf<ImgurImage>()
@@ -168,10 +168,11 @@ class ImgurApi {
                 else -> ""
             }
 
-            var url = "gallery/search/$sortParam/$page"
-            if (!timeWindow.equals("")) {
-                url += timeWindow
+            var url = "gallery/search/$sortParam/"
+            if (!timeWindow.equals("") && sortParam == "top") {
+                url += "$timeWindow/"
             }
+            url +=page
             var filter = ""
             for (search in parameterSearch.query) {
                 if (filter == "")

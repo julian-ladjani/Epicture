@@ -90,6 +90,19 @@
         <item>Time</item>
         <item>Rising</item>
     </string-array>
+    <string-array name="imgur_format">
+        <item>All</item>
+        <item>JPG</item>
+        <item>PNG</item>
+        <item>GIF</item>
+    </string-array>
+    <string-array name="imgur_size">
+        <item>All</item>
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Big</item>
+        <item>Large</item>
+    </string-array>
     <string-array name="grids">
         <item>Home</item>
         <item>Favorite</item>

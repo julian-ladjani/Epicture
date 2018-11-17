@@ -7,6 +7,10 @@ import kotlinx.android.parcel.Parcelize
 class ParameterSearch (
         var section :Int = 0,
         var sort :Int = 0,
+        var sortSearch :Int = 0,
         var time :Int = 0,
-        var query: ArrayList<ParameterQuery>
+        var timeSearch: Int = 0,
+        var type :Int = 0,
+        var size :Int = 0,
+        var query: ArrayList<ParameterQuery> = arrayListOf()
 ) : Parcelable
