@@ -309,7 +309,9 @@ class GridActivity : AppCompatActivity() {
     }
 
     private fun searchBarHomeMode() {
-        searchBar!!.mt_search.visibility = View.VISIBLE
+        if (searchQuery == null) {
+            searchBar!!.mt_search.visibility = View.VISIBLE
+        }
         searchBar!!.mt_search.setImageResource(R.drawable.ic_filter_icon)
     }
 
@@ -322,10 +324,20 @@ class GridActivity : AppCompatActivity() {
         searchBar!!.isClickable = visible
         searchBar!!.mt_nav.isClickable = visible
         if (visible) {
-            searchBar!!.mt_placeholder.visibility = View.VISIBLE
+            if (searchQuery == null) {
+                searchBar!!.mt_placeholder.visibility = View.VISIBLE
+                searchBar!!.mt_search.visibility = View.VISIBLE
+            } else {
+                searchBar!!.mt_search.visibility = View.GONE
+                searchBar!!.mt_clear.visibility = View.VISIBLE
+                searchBar!!.mt_editText.visibility = View.VISIBLE
+            }
             searchBar!!.mt_nav.visibility = View.VISIBLE
-            searchBar!!.mt_search.visibility = View.VISIBLE
         } else {
+            if (searchQuery != null) {
+                searchBar!!.mt_clear.visibility = View.GONE
+                searchBar!!.mt_editText.visibility = View.GONE
+            }
             searchBar!!.mt_placeholder.visibility = View.GONE
             searchBar!!.mt_nav.visibility = View.GONE
             searchBar!!.mt_search.visibility = View.GONE
