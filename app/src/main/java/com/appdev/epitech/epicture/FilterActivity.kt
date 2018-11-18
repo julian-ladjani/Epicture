@@ -4,15 +4,21 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ImageButton
+import android.widget.CompoundButton
 import com.appdev.epitech.epicture.R.id.*
 import com.appdev.epitech.epicture.api.ImgurApi
 import com.google.android.material.chip.Chip
-import com.google.android.material.resources.MaterialResources
 import kotlinx.android.synthetic.main.activity_filter.*
 import kotlinx.android.synthetic.main.toolbar.view.*
 
-class FilterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnClickListener {
+class FilterActivity : AppCompatActivity(),
+        AdapterView.OnItemSelectedListener,
+        View.OnClickListener,
+        CompoundButton.OnCheckedChangeListener {
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+        ImgurApi.getParameterSearch().mature = isChecked
+    }
+
     override fun onClick(v: View?) {
         if (v == addTagButton) {
             val tag = editTag.text.toString()
@@ -45,6 +51,8 @@ class FilterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, 
         addTagButton.setOnClickListener(this)
         formatList.onItemSelectedListener = this
         sizeList.onItemSelectedListener = this
+        nsfwSwitch.setOnCheckedChangeListener(this)
+        nsfwSwitch.isChecked = ImgurApi.getParameterSearch().mature
         hideCorrectItems()
     }
 
@@ -83,7 +91,7 @@ class FilterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, 
         ImgurApi.getParameterSearch().tags.forEach { action -> restoreTag(action) }
     }
 
-    private fun restoreTag(tag: String){
+    private fun restoreTag(tag: String) {
         val chip = Chip(this)
         chip.text = tag
         //chip.setChipBackgroundColorResource(R.color.chipBackground)
