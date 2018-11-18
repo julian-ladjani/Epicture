@@ -122,6 +122,12 @@ class ImageGridAdapter(private val mContext: Context,
         images!!.clear()
     }
 
+    fun addNewValues(mObjects: MutableList<ImgurImage>, nbNewItem: Int) {
+        var oldSize = images!!.size
+        images!!.addAll(mObjects)
+        notifyItemRangeInserted(oldSize, nbNewItem)
+    }
+
     fun setNewValues(mObjects: MutableList<ImgurImage>) {
         images!!.addAll(mObjects)
         notifyDataSetChanged()

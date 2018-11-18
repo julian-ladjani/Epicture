@@ -176,6 +176,7 @@ class GridActivity : AppCompatActivity() {
                 },
                 grid_view_images)
         grid_view_images.adapter = gridAdapter
+        grid_view_images.layoutManager = staggeredGridLayoutManager
         grid_pull_to_refresh.setOnRefreshListener { GridActivityOnRefreshListener(this).onRefresh() }
     }
 
@@ -192,9 +193,10 @@ class GridActivity : AppCompatActivity() {
             if (images.isEmpty())
                 maxPage = true
             else {
+                println("Size:"+images.size)
                 images.addAll(images)
-                gridAdapter!!.clearAdapter()
-                gridAdapter!!.setNewValues(images)
+                println("Size:"+images.size)
+                gridAdapter!!.addNewValues(images, images.size)
             }
         }
     }
