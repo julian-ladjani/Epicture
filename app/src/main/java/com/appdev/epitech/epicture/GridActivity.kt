@@ -49,7 +49,7 @@ class GridActivity : AppCompatActivity() {
 
     fun refreshAction() {
         grid_view_images.addOnItemTouchListener(recyclerViewTouchDisabler)
-        grid_view_images.scrollToPosition(grid_load_progress.top)
+        grid_view_images.scrollToPosition(grid_view_images.top)
         if (currentGrid == CurrentGridEnum.HOME_GRID)
             homeGridAction()
         if (currentGrid == CurrentGridEnum.FAVORITE_GRID)
@@ -246,7 +246,10 @@ class GridActivity : AppCompatActivity() {
 
     fun disableSearch(refresh: Boolean = true) {
         searchBar!!.setPlaceHolder("Search...")
-        searchBar!!.disableSearch()
+        if (searchBar!!.isEnabled) {
+            searchBar!!.clearFocus()
+            searchBar!!.disableSearch()
+        }
         if (searchQuery != null) {
             searchQuery = null
             if (refresh)
