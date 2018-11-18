@@ -112,10 +112,10 @@ class ImgurApi {
                             activity.logoutAction()
                         } else {
                             listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
-                            if (page > 0)
-                                activity.loadMorePage(listImage)
-                            else
+                            if (page == 0)
                                 activity.loadGrid(listImage)
+                            else
+                                activity.loadMorePage(listImage)
                         }
                     }
             return listImage
@@ -215,7 +215,10 @@ class ImgurApi {
                                 listImage = ConvertData.imagesToMutableListImgurImage(data, listImage, true)
                             else
                                 listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
-                            activity.loadGrid(listImage)
+                            if (page == 0)
+                                activity.loadGrid(listImage)
+                            else
+                                activity.loadMorePage(listImage)
                         }
                     }
             return listImage
@@ -235,7 +238,10 @@ class ImgurApi {
                             imgurTag = JSONObject(imgurTag).getJSONArray("items").toString()
                             imgurTag = "{data:${imgurTag}, \"success\": true}"
                             listImage = ConvertData.galleryToMutableListImgurImage(imgurTag, listImage)
-                            activity.loadGrid(listImage)
+                            if (page == 0)
+                                activity.loadGrid(listImage)
+                            else
+                                activity.loadMorePage(listImage)
                         }
                     }
             return listImage
@@ -253,7 +259,6 @@ class ImgurApi {
                             activity.logoutAction()
                         } else {
                             listImage = ConvertData.imagesToMutableListImgurImage(data, listImage, false)
-                            val activity = context as GridActivity
                             activity.loadGrid(listImage)
                         }
                     }
