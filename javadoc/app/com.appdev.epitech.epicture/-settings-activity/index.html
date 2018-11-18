@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>SettingsActivity - app</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">app</a>&nbsp;/&nbsp;<a href="../index.html">com.appdev.epitech.epicture</a>&nbsp;/&nbsp;<a href="./index.html">SettingsActivity</a><br/>
+<br/>
+<h1>SettingsActivity</h1>
+<code><span class="keyword">class </span><span class="identifier">SettingsActivity</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">PreferenceActivity</span></code>
+<p>A <a href="#">PreferenceActivity</a> that presents a set of application settings. On
+handset devices, settings are presented as a single list. On tablets,
+settings are split by category, with category headers shown to the left of
+the list of settings.</p>
+<p>See <a href="http://developer.android.com/design/patterns/settings.html">Android Design: Settings</a>
+for design guidelines and the <a href="http://developer.android.com/guide/topics/ui/settings.html">Settings API Guide</a>
+for more information on developing a Settings UI.</p>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-data-sync-preference-fragment/index.html">DataSyncPreferenceFragment</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">DataSyncPreferenceFragment</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">PreferenceFragment</span></code>
+<p>This fragment shows data and sync preferences only. It is used when the
+activity is showing a two-pane settings UI.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="-general-preference-fragment/index.html">GeneralPreferenceFragment</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">GeneralPreferenceFragment</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">PreferenceFragment</span></code>
+<p>This fragment shows general preferences only. It is used when the
+activity is showing a two-pane settings UI.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="-notification-preference-fragment/index.html">NotificationPreferenceFragment</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">NotificationPreferenceFragment</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">PreferenceFragment</span></code>
+<p>This fragment shows notification preferences only. It is used when the
+activity is showing a two-pane settings UI.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">SettingsActivity</span><span class="symbol">(</span><span class="symbol">)</span></code>
+<p>A <a href="#">PreferenceActivity</a> that presents a set of application settings. On
+handset devices, settings are presented as a single list. On tablets,
+settings are split by category, with category headers shown to the left of
+the list of settings.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="is-valid-fragment.html">isValidFragment</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">isValidFragment</span><span class="symbol">(</span><span class="identifier" id="com.appdev.epitech.epicture.SettingsActivity$isValidFragment(kotlin.String)/fragmentName">fragmentName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code>
+<p>This method stops fragment injection in malicious applications.
+Make sure to deny any unknown fragments here.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="on-build-headers.html">onBuildHeaders</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onBuildHeaders</span><span class="symbol">(</span><span class="identifier" id="com.appdev.epitech.epicture.SettingsActivity$onBuildHeaders(kotlin.collections.List((android.preference.PreferenceActivity.Header)))/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Header</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>{@inheritDoc}</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="on-create.html">onCreate</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onCreate</span><span class="symbol">(</span><span class="identifier" id="com.appdev.epitech.epicture.SettingsActivity$onCreate(android.os.Bundle)/savedInstanceState">savedInstanceState</span><span class="symbol">:</span>&nbsp;<span class="identifier">Bundle</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="on-is-multi-pane.html">onIsMultiPane</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onIsMultiPane</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code>
+<p>{@inheritDoc}</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -1,0 +1,19 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>R.attr.fontProviderFetchStrategy - app</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">app</a>&nbsp;/&nbsp;<a href="../../index.html">com.appdev.epitech.epicture</a>&nbsp;/&nbsp;<a href="../index.html">R</a>&nbsp;/&nbsp;<a href="index.html">attr</a>&nbsp;/&nbsp;<a href="./font-provider-fetch-strategy.html">fontProviderFetchStrategy</a><br/>
+<br/>
+<h1>fontProviderFetchStrategy</h1>
+<a name="com.appdev.epitech.epicture.R.attr$fontProviderFetchStrategy"></a>
+<code><span class="keyword">static</span> <span class="keyword">val </span><span class="identifier">fontProviderFetchStrategy</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code><br/>
+<a name="com.appdev.epitech.epicture.R.attr$fontProviderFetchStrategy"></a>
+<code><span class="keyword">static</span> <span class="keyword">val </span><span class="identifier">fontProviderFetchStrategy</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
+<p>The strategy to be used when fetching font data from a font provider in XML layouts. This attribute is ignored when the resource is loaded from code, as it is equivalent to the choice of API between androidx.core.content.res.ResourcesCompat#getFont(Context, int) (blocking) and androidx.core.content.res.ResourcesCompat#getFont(Context, int, FontCallback, Handler) (async). 
+<p>Must be one of the following constant values.</p>
+     ConstantValueDescription async1The async font fetch works as follows. First, check the local cache, then if the requeted font is not cached, trigger a request the font and continue with layout inflation. Once the font fetch succeeds, the target text view will be refreshed with the downloaded font data. The fontProviderFetchTimeout will be ignored if async loading is specified. blocking0The blocking font fetch works as follows. First, check the local cache, then if the requested font is not cached, request the font from the provider and wait until it is finished. You can change the length of the timeout by modifying fontProviderFetchTimeout. If the timeout happens, the default typeface will be used instead. </p>
+</BODY>
+</HTML>
