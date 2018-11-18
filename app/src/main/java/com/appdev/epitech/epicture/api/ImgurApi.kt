@@ -206,6 +206,7 @@ class ImgurApi {
                             Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
                         else {
                             listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
+                            println(listImage)
                             val activity = context as GridActivity
                             activity.loadGrid(listImage)
                         }

@@ -41,6 +41,7 @@ class GridActivity : AppCompatActivity() {
     private var images: MutableList<ImgurImage> = mutableListOf()
     private var gridAlreadyLoad = false
     private var maxPage = false
+    private var searchQuery: String? = null
     private var nbPage = 0
     private var _path: File? = Environment.getExternalStorageDirectory()
     private var currentGrid: CurrentGridEnum = CurrentGridEnum.HOME_GRID
@@ -111,10 +112,8 @@ class GridActivity : AppCompatActivity() {
     }
 
     fun searchAction(text: String) {
-        images = if (text[0] == '#' && text.length >= 2)
-            ImgurApi.getSearchTag(this, text.substring(1))
-        else
-            ImgurApi.getSearch(this, text,0)
+        searchQuery = text
+        refreshAction()
     }
 
     fun uploadAction(permissionResquested: Boolean) {
@@ -182,6 +181,7 @@ class GridActivity : AppCompatActivity() {
 
     //loader
     fun loadMorePageAction() {
+        println("load more")
         if (currentGrid == GridActivity.CurrentGridEnum.HOME_GRID) {
             nbPage++
             getGallery(nbPage)
@@ -193,10 +193,13 @@ class GridActivity : AppCompatActivity() {
             if (images.isEmpty())
                 maxPage = true
             else {
-                println("Size:"+images.size)
+                println("Size:" + images.size)
                 images.addAll(images)
-                println("Size:"+images.size)
+                println("Size:" + images.size)
                 gridAdapter!!.addNewValues(images, images.size)
+                if (gridAdapter != null) {
+                    gridAdapter!!.disableActivityLoading()
+                }
             }
         }
     }
@@ -212,8 +215,11 @@ class GridActivity : AppCompatActivity() {
         }
         maxPage = false
         nbPage = 0
-        if (gridAdapter != null)
+        if (gridAdapter != null) {
             gridAdapter!!.resetScrollManager()
+            if (!images.isNullOrEmpty())
+                gridAdapter!!.disableActivityLoading()
+        }
         grid_pull_to_refresh.isRefreshing = false
         grid_load_progress.visibility = View.GONE
         grid_view_images.removeOnItemTouchListener(recyclerViewTouchDisabler)
@@ -228,7 +234,8 @@ class GridActivity : AppCompatActivity() {
                 searchBar!!.cardView.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
                     searchBar!!.clearFocus()
-                    searchBar!!.disableSearch()
+                    if (searchBar!!.text.isNullOrBlank() || searchBar!!.text.isEmpty())
+                        disableSearch()
                 }
 
             }
@@ -237,13 +244,37 @@ class GridActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
+    fun disableSearch(refresh: Boolean = true) {
+        searchBar!!.setPlaceHolder("Search...")
+        searchBar!!.disableSearch()
+        if (searchQuery != null) {
+            searchQuery = null
+            if (refresh)
+                refreshAction()
+        }
+    }
+
     //getters
     fun getSearchBar(): MaterialSearchBar {
         return searchBar!!
     }
 
     fun getGallery(page: Int) {
-        images = ImgurApi.getGallery(this, page, false)
+        if (searchQuery == null)
+            images = ImgurApi.getGallery(this, page, false)
+        else
+            getGallerySearch(page)
+    }
+
+    fun getGallerySearch(page: Int) {
+        if (searchQuery == null)
+            getGallery(page)
+        else {
+            images = if (searchQuery!![0] == '#' && searchQuery!!.length >= 2)
+                ImgurApi.getSearchTag(this, searchQuery!!.substring(1))
+            else
+                ImgurApi.getSearch(this, searchQuery!!, page)
+        }
     }
 
     fun canLoadMorePage(): Boolean {

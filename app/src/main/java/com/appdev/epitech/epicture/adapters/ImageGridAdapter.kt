@@ -113,6 +113,12 @@ class ImageGridAdapter(private val mContext: Context,
         it.start()
     }
 
+    fun disableActivityLoading() {
+        println("disableActivityLoading")
+        if (scrollListener != null)
+            scrollListener!!.disableActivityLoading()
+    }
+
     fun resetScrollManager() {
         if (scrollListener != null)
             scrollListener!!.resetState()

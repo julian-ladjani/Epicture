@@ -16,6 +16,7 @@ abstract class EndlessRecyclerViewScrollListener : RecyclerView.OnScrollListener
     private var previousTotalItemCount = 0
     // True if we are still waiting for the last set of data to load.
     private var loading = true
+    private var activityLoading = true
     // Sets the starting page index
     private val startingPageIndex = 0
 
@@ -76,7 +77,7 @@ abstract class EndlessRecyclerViewScrollListener : RecyclerView.OnScrollListener
         // If it’s still loading, we check to see if the dataset count has
         // changed, if so we conclude it has finished loading and update the current page
         // number and total item count.
-        if (loading && totalItemCount > (previousTotalItemCount + 1)) {
+        if (loading && !activityLoading && totalItemCount > (previousTotalItemCount + 1)) {
             loading = false
             previousTotalItemCount = totalItemCount
         }
@@ -85,14 +86,19 @@ abstract class EndlessRecyclerViewScrollListener : RecyclerView.OnScrollListener
         // the visibleThreshold and need to reload more data.
         // If we do need to reload some more data, we execute onLoadMore to fetch the data.
         // threshold should reflect how many total columns there are too
-        if (!loading && lastVisibleItemPosition + visibleThreshold > totalItemCount) {
+        if (!loading && !activityLoading && lastVisibleItemPosition + visibleThreshold > totalItemCount) {
             currentPage++
+            activityLoading = true
             onLoadMore(currentPage, totalItemCount, view)
             loading = true
         }
     }
 
     // Call this method whenever performing new searches
+    fun disableActivityLoading() {
+        activityLoading = false
+    }
+
     fun resetState() {
         this.currentPage = this.startingPageIndex
         this.previousTotalItemCount = 0

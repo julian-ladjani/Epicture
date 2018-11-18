@@ -14,7 +14,7 @@ class MaterialSearchBarOnSearchActionListener(var activity: GridActivity) :
                 searchBar.enableSearch()
             }
             MaterialSearchBar.BUTTON_SPEECH -> activity.searchBarButtonClickAction()
-            MaterialSearchBar.BUTTON_BACK -> searchBar.disableSearch()
+            MaterialSearchBar.BUTTON_BACK -> activity.disableSearch()
         }
     }
 
@@ -25,11 +25,11 @@ class MaterialSearchBarOnSearchActionListener(var activity: GridActivity) :
     override fun onSearchConfirmed(text: CharSequence) {
         if (text.isEmpty() || text.isBlank()) {
             searchBar.setPlaceHolder("Search...")
+            activity.disableSearch()
         } else {
             searchBar.setPlaceHolder(text)
             suggestionAdapter.addSuggestion(text.toString())
             searchBar.clearFocus()
-            searchBar.disableSearch()
             activity.searchAction(text.toString())
         }
     }
