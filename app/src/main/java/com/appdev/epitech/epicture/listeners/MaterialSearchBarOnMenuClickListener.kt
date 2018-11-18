@@ -8,7 +8,7 @@ class MaterialSearchBarOnMenuClickListener(var activity: GridActivity) {
     fun onMenuClick(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_logout -> activity.logoutAction()
-            R.id.action_settings -> activity.settingAction()
+            //R.id.action_settings -> activity.settingAction()
         }
         return false
     }
