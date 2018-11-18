@@ -38,7 +38,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.appcompat:appcompat:${ANDROIDX_LIB_VER}"
     implementation "androidx.cardview:cardview:${ANDROIDX_LIB_VER}"
-    implementation "com.google.android.material:material:${ANDROIDX_LIB_VER}"
+    implementation "com.google.android.material:material:1.0.0"
     implementation "androidx.legacy:legacy-preference-v14:${ANDROIDX_LIB_VER}"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 

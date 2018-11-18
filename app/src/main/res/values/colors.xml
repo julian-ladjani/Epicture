@@ -3,6 +3,7 @@
     <color name="colorPrimary">#00a1ff</color>
     <color name="login_button_background">#00bb67</color>
     <color name="colorPrimaryDark">#383535</color>
+    <color name="chipBackground">#424242</color>
     <color name="colorAccent">#00a1ff</color>
     <color name="dialogPrimaryDark">#616161</color>
     <color name="common_border_color">#454a52</color>
