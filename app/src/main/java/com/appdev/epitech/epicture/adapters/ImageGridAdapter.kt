@@ -30,6 +30,7 @@ class ImageGridAdapter(private val mContext: Context,
     private var scrollListener: EndlessRecyclerViewScrollListener? = null
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_LOADING = 1
+    private val progress_disable = true
 
 
     init {
@@ -96,10 +97,16 @@ class ImageGridAdapter(private val mContext: Context,
             val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
             layoutParams.isFullSpan = true
             val loadingViewHolder = holder as ViewHolderLoading
-            if ((mContext as GridActivity).canLoadMorePage())
+            if ((mContext as GridActivity).canLoadMorePage() && images!!.size > 25) {
+                loadingViewHolder.noProgressBar!!.visibility = View.GONE
                 loadingViewHolder.progressBar!!.visibility = View.VISIBLE
-            else
+            } else {
                 loadingViewHolder.progressBar!!.visibility = View.GONE
+                loadingViewHolder.noProgressBar!!.visibility = View.GONE
+                if (mContext.canShowLoadNoMorePage())
+                    loadingViewHolder.noProgressBar!!.visibility = View.VISIBLE
+            }
+            loadingViewHolder.noProgressBar!!.isIndeterminate = true
             loadingViewHolder.progressBar!!.isIndeterminate = true
         }
     }
@@ -141,6 +148,7 @@ class ImageGridAdapter(private val mContext: Context,
 
     private class ViewHolderLoading(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var progressBar: ProgressBar? = itemView.grid_load_more_progress
+        var noProgressBar: ProgressBar? = itemView.grid_no_more_progress
     }
 
     private class ViewHolderRow(itemView: View) : RecyclerView.ViewHolder(itemView) {

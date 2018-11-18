@@ -237,7 +237,7 @@ class GridActivity : AppCompatActivity() {
                 if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
                     searchBar!!.clearFocus()
                     grid_view_images.requestFocus()
-                    if (searchQuery ==  null)
+                    if (searchQuery == null)
                         disableSearch()
                 }
 
@@ -281,6 +281,12 @@ class GridActivity : AppCompatActivity() {
             else
                 ImgurApi.getSearch(this, searchQuery!!, page)
         }
+    }
+
+    fun canShowLoadNoMorePage(): Boolean {
+        if (currentGrid == CurrentGridEnum.HOME_GRID && gridAlreadyLoad)
+            return true
+        return false
     }
 
     fun canLoadMorePage(): Boolean {
