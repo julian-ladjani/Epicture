@@ -217,9 +217,9 @@ class ImgurApi {
             return listImage
         }
 
-        fun getSearchTag(context: Context, tag: String): MutableList<ImgurImage> {
+        fun getSearchTag(context: Context, tag: String, page: Int = 0): MutableList<ImgurImage> {
             var listImage = mutableListOf<ImgurImage>()
-            "/gallery/t/$tag".httpGet()
+            "/gallery/t/$tag/$page".httpGet()
                     .responseString { request, response, result ->
                         val (data, error) = result
                         if (error != null)
