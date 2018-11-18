@@ -158,7 +158,7 @@ class ImgurApi {
                 1 -> "&q_size_px=small"
                 2 -> "&q_size_px=medium"
                 3 -> "&q_size_px=big"
-                4 -> "&q_size_px=large"
+                4 -> "&q_size_px=lrg"
                 5 -> "&q_size_px=huge"
                 else -> "" // Top (x)
             }
@@ -205,7 +205,11 @@ class ImgurApi {
                         if (error != null)
                             Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
                         else {
-                            listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
+                            println("DATA:$data")
+                            if (parameterSearch.type > 1 || parameterSearch.size >= 1)
+                                listImage = ConvertData.imagesToMutableListImgurImage(data, listImage, true)
+                            else
+                                listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
                             val activity = context as GridActivity
                             activity.loadGrid(listImage)
                         }
@@ -240,7 +244,7 @@ class ImgurApi {
                         if (error != null)
                             Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
                         else {
-                            listImage = ConvertData.imagesToMutableListImgurImage(data, listImage)
+                            listImage = ConvertData.imagesToMutableListImgurImage(data, listImage, false)
                             val activity = context as GridActivity
                             activity.loadGrid(listImage)
                         }
@@ -270,7 +274,7 @@ class ImgurApi {
                         if (error != null && mode)
                             Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
                         else if(data != null) {
-                            listImage = ConvertData.imagesToMutableListImgurImage(data, listImage)
+                            listImage = ConvertData.imagesToMutableListImgurImage(data, listImage, false)
                             if (mode) {
                                 val activity = context as GridActivity
                                 activity.loadGrid(listImage)
