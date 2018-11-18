@@ -27,10 +27,10 @@ class MaterialSearchBarOnSearchActionListener(var activity: GridActivity) :
             searchBar.setPlaceHolder("Search...")
         } else {
             searchBar.setPlaceHolder(text)
+            suggestionAdapter.addSuggestion(text.toString())
+            searchBar.clearFocus()
+            searchBar.disableSearch()
+            activity.searchAction(text.toString())
         }
-        suggestionAdapter.addSuggestion(text.toString())
-        searchBar.clearFocus()
-        searchBar.disableSearch()
-        activity.searchAction(text.toString())
     }
 }
