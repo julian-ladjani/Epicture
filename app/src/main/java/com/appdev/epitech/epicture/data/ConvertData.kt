@@ -74,13 +74,15 @@ class ConvertData {
             listImage.add(imgurImage)
         }
 
-        fun imagesToMutableListImgurImage(data: String?, listImage: MutableList<ImgurImage>):MutableList<ImgurImage> {
+        fun imagesToMutableListImgurImage(data: String?, listImage: MutableList<ImgurImage>, search: Boolean):MutableList<ImgurImage> {
             val gson = Gson()
             val imgurGallery = getJsonData(data.toString())
             val images = gson.fromJson(imgurGallery, Array<ImgurImage>::class.java)
             for (image in images)
-                if (!image.in_gallery)
+                if (!image.in_gallery || search) {
+                    println("pass")
                     makeImgurImage(image, "", listImage)
+                }
             return listImage
         }
 
