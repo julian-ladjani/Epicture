@@ -215,6 +215,7 @@ class ImgurApi {
                                 listImage = ConvertData.imagesToMutableListImgurImage(data, listImage, true)
                             else
                                 listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
+                            listImage.removeIf { x-> x.link == null }
                             if (page == 0)
                                 activity.loadGrid(listImage)
                             else
@@ -274,6 +275,7 @@ class ImgurApi {
                         else {
                             val activity = context as ImageActivity
                             activity.setfavorite(!favorite)
+                            reloadFavorite()
                         }
                     }
             return favorite

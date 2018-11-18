@@ -79,7 +79,7 @@ class ConvertData {
             val imgurGallery = getJsonData(data.toString())
             val images = gson.fromJson(imgurGallery, Array<ImgurImage>::class.java)
             for (image in images)
-                if (!image.in_gallery || search) {
+                if (!image.in_gallery || search || image.type != "") {
                     println("pass")
                     makeImgurImage(image, "", listImage)
                 }

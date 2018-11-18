@@ -9,7 +9,7 @@ data class ImgurImage(
         val title: String = "id",
         val description: String = "id",
         val datetime: Long = 0,
-        val type: String = "id",
+        val type: String = "",
         val animated: Boolean = false,
         val width: Int = 0,
         val height: Int = 0,
