@@ -112,6 +112,8 @@ class GridActivity : AppCompatActivity() {
     }
 
     fun searchAction(text: String) {
+        searchBar!!.clearFocus()
+        grid_view_images.requestFocus()
         searchQuery = text
         refreshAction()
     }
@@ -234,7 +236,8 @@ class GridActivity : AppCompatActivity() {
                 searchBar!!.cardView.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
                     searchBar!!.clearFocus()
-                    if (searchBar!!.text.isNullOrBlank() || searchBar!!.text.isEmpty())
+                    grid_view_images.requestFocus()
+                    if (searchQuery ==  null)
                         disableSearch()
                 }
 
