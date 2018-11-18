@@ -271,7 +271,7 @@ class GridActivity : AppCompatActivity() {
             getGallery(page)
         else {
             images = if (searchQuery!![0] == '#' && searchQuery!!.length >= 2)
-                ImgurApi.getSearchTag(this, searchQuery!!.substring(1))
+                ImgurApi.getSearchTag(this, searchQuery!!.substring(1), page)
             else
                 ImgurApi.getSearch(this, searchQuery!!, page)
         }

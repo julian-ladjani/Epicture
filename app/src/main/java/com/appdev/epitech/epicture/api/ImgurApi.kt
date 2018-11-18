@@ -281,18 +281,20 @@ class ImgurApi {
 
         fun getMyFavoriteImage(context: Context?, mode: Boolean): MutableList<ImgurImage> {
             var listImage = mutableListOf<ImgurImage>()
-            val activity = context as GridActivity
+            var activity: GridActivity? = null
+            if (mode)
+                activity = context as GridActivity
 
             "/account/me/favorites".httpGet()
                     .responseString { request, response, result ->
                         val (data, error) = result
                         if (error != null && mode) {
                             Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
-                            activity.logoutAction()
+                            activity!!.logoutAction()
                         } else if (data != null) {
                             listImage = ConvertData.imagesToMutableListImgurImage(data, listImage, false)
                             if (mode) {
-                                activity.loadGrid(listImage)
+                                activity!!.loadGrid(listImage)
                             }
                         }
                     }
