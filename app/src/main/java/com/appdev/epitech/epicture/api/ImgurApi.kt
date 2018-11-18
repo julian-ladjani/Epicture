@@ -71,6 +71,9 @@ class ImgurApi {
         }
 
         fun getGallery(context: Context, page: Int, nsfwEnabled: Boolean = true): MutableList<ImgurImage> {
+            val activity = context as GridActivity
+            var listImage = mutableListOf<ImgurImage>()
+
             val sectionParam = when (parameterSearch.section) {
                 0 -> "hot"
                 1 -> "top"
@@ -97,19 +100,18 @@ class ImgurApi {
             if (!timeWindow.equals("") && sectionParam == "top") {
                 url += "$timeWindow/"
             }
-            url +=page
+            url += page
             url += "?mature=${parameterSearch.mature}&album_previews=true"
             println("URL:$url")
-            var listImage = mutableListOf<ImgurImage>()
             url.httpGet()
                     .responseString { request, response, result ->
                         //make a GET to https://httpbin.org/get and do something with response
                         val (data, error) = result
-                        if (error != null)
+                        if (error != null) {
                             Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
-                        else {
+                            activity.logoutAction()
+                        } else {
                             listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
-                            val activity = context as GridActivity
                             if (page > 0)
                                 activity.loadMorePage(listImage)
                             else
@@ -141,7 +143,7 @@ class ImgurApi {
                         val (data, error) = result
                         if (error != null) {
                             Toast.makeText(context, "Error: Image not delete", Toast.LENGTH_SHORT).show()
-                        }else {
+                        } else {
                             Toast.makeText(context, "Success: Image deleted !", Toast.LENGTH_SHORT).show()
                             var activity = context as GridActivity
                             activity.refreshAction()
@@ -150,7 +152,7 @@ class ImgurApi {
             return true
         }
 
-        fun getfilter(query:String): String {
+        fun getfilter(query: String): String {
             var filter = "?q=$query"
             filter += when (parameterSearch.size) {
                 -1 -> ""
@@ -176,6 +178,9 @@ class ImgurApi {
         }
 
         fun getSearch(context: Context, search: String, page: Int): MutableList<ImgurImage> {
+            val activity = context as GridActivity
+            var listImage = mutableListOf<ImgurImage>()
+
             val sortParam = when (parameterSearch.sortSearch) {
                 0 -> "viral"
                 1 -> "time"
@@ -195,22 +200,21 @@ class ImgurApi {
             if (!timeWindow.equals("") && sortParam == "top") {
                 url += "$timeWindow/"
             }
-            url +=page
+            url += page
             url += getfilter(search)
             println(url)
-            var listImage = mutableListOf<ImgurImage>()
             url.httpGet()
                     .responseString { request, response, result ->
                         val (data, error) = result
-                        if (error != null)
+                        if (error != null) {
                             Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
-                        else {
+                            activity.logoutAction()
+                        } else {
                             println("DATA:$data")
                             if (parameterSearch.type > 1 || parameterSearch.size >= 1)
                                 listImage = ConvertData.imagesToMutableListImgurImage(data, listImage, true)
                             else
                                 listImage = ConvertData.galleryToMutableListImgurImage(data, listImage)
-                            val activity = context as GridActivity
                             activity.loadGrid(listImage)
                         }
                     }
@@ -218,18 +222,19 @@ class ImgurApi {
         }
 
         fun getSearchTag(context: Context, tag: String, page: Int = 0): MutableList<ImgurImage> {
+            val activity = context as GridActivity
             var listImage = mutableListOf<ImgurImage>()
             "/gallery/t/$tag/$page".httpGet()
                     .responseString { request, response, result ->
                         val (data, error) = result
-                        if (error != null)
+                        if (error != null) {
                             Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
-                        else {
+                            activity.logoutAction()
+                        } else {
                             var imgurTag = getJsonData(data.toString())
                             imgurTag = JSONObject(imgurTag).getJSONArray("items").toString()
                             imgurTag = "{data:${imgurTag}, \"success\": true}"
                             listImage = ConvertData.galleryToMutableListImgurImage(imgurTag, listImage)
-                            val activity = context as GridActivity
                             activity.loadGrid(listImage)
                         }
                     }
@@ -238,12 +243,15 @@ class ImgurApi {
 
         fun getMyImage(context: Context): MutableList<ImgurImage> {
             var listImage = mutableListOf<ImgurImage>()
+            val activity = context as GridActivity
+
             "/account/me/images".httpGet()
                     .responseString { request, response, result ->
                         val (data, error) = result
-                        if (error != null)
+                        if (error != null) {
                             Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
-                        else {
+                            activity.logoutAction()
+                        } else {
                             listImage = ConvertData.imagesToMutableListImgurImage(data, listImage, false)
                             val activity = context as GridActivity
                             activity.loadGrid(listImage)
@@ -268,52 +276,22 @@ class ImgurApi {
 
         fun getMyFavoriteImage(context: Context?, mode: Boolean): MutableList<ImgurImage> {
             var listImage = mutableListOf<ImgurImage>()
+            val activity = context as GridActivity
+
             "/account/me/favorites".httpGet()
                     .responseString { request, response, result ->
                         val (data, error) = result
-                        if (error != null && mode)
+                        if (error != null && mode) {
                             Toast.makeText(context, "Error: Connection failed", Toast.LENGTH_SHORT).show()
-                        else if(data != null) {
+                            activity.logoutAction()
+                        } else if (data != null) {
                             listImage = ConvertData.imagesToMutableListImgurImage(data, listImage, false)
                             if (mode) {
-                                val activity = context as GridActivity
                                 activity.loadGrid(listImage)
                             }
                         }
                     }
             return listImage
-        }
-
-        fun getMetadataFromId(id: String, context: Context): Image {
-            val url = "https://api.imgur.com/3/image/$id"
-            val request = HttpUtils.createRequest(url, mapOf("Authorization" to "Client-ID ${clientId}"))
-            val response = HttpUtils.sendRequest(request)
-            val body = response.body()!!
-            val jsonResponse = body.string()
-            val gson = Gson()
-            val imgurJson = getJsonData(jsonResponse)
-            val imgurImage = gson.fromJson(imgurJson, ImgurGalleryAlbum::class.java)
-            return Image(
-                    if (imgurImage.is_album) {
-                        imgurImage.cover
-                    } else {
-                        imgurImage.id
-                    },
-                    if (imgurImage.title != null) {
-                        imgurImage.title
-                    } else {
-                        imgurImage.id
-                    },
-                    SecretUtils.getSecrets(context).second.accountUsername,
-                    imgurImage.points,
-                    imgurImage.datetime,
-                    if (imgurImage.is_album) {
-                        imgurImage.id
-                    } else {
-                        ""
-                    },
-                    imgurImage.is_album
-            )
         }
     }
 }
