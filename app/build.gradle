@@ -76,5 +76,5 @@ apply plugin: 'org.jetbrains.dokka'
 
 dokka {
     outputFormat = 'html'
-    outputDirectory = "$buildDir/lucaslepd"
+    outputDirectory = "$buildDir/javadoc"
 }

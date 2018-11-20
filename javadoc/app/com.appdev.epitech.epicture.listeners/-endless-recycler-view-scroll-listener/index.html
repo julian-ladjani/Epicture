@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>EndlessRecyclerViewScrollListener - app</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">app</a>&nbsp;/&nbsp;<a href="../index.html">com.appdev.epitech.epicture.listeners</a>&nbsp;/&nbsp;<a href="./index.html">EndlessRecyclerViewScrollListener</a><br/>
+<br/>
+<h1>EndlessRecyclerViewScrollListener</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">EndlessRecyclerViewScrollListener</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">OnScrollListener</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">EndlessRecyclerViewScrollListener</span><span class="symbol">(</span><span class="identifier" id="com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener$<init>(androidx.recyclerview.widget.LinearLayoutManager)/layoutManager">layoutManager</span><span class="symbol">:</span>&nbsp;<span class="identifier">LinearLayoutManager</span><span class="symbol">)</span></code><br/>
+<code><span class="identifier">EndlessRecyclerViewScrollListener</span><span class="symbol">(</span><span class="identifier" id="com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener$<init>(androidx.recyclerview.widget.GridLayoutManager)/layoutManager">layoutManager</span><span class="symbol">:</span>&nbsp;<span class="identifier">GridLayoutManager</span><span class="symbol">)</span></code><br/>
+<code><span class="identifier">EndlessRecyclerViewScrollListener</span><span class="symbol">(</span><span class="identifier" id="com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener$<init>(androidx.recyclerview.widget.StaggeredGridLayoutManager)/layoutManager">layoutManager</span><span class="symbol">:</span>&nbsp;<span class="identifier">StaggeredGridLayoutManager</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="disable-activity-loading.html">disableActivityLoading</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">disableActivityLoading</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-last-visible-item.html">getLastVisibleItem</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getLastVisibleItem</span><span class="symbol">(</span><span class="identifier" id="com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener$getLastVisibleItem(kotlin.IntArray)/lastVisibleItemPositions">lastVisibleItemPositions</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html"><span class="identifier">IntArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="on-load-more.html">onLoadMore</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">onLoadMore</span><span class="symbol">(</span><span class="identifier" id="com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener$onLoadMore(kotlin.Int, kotlin.Int, androidx.recyclerview.widget.RecyclerView)/page">page</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener$onLoadMore(kotlin.Int, kotlin.Int, androidx.recyclerview.widget.RecyclerView)/totalItemsCount">totalItemsCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener$onLoadMore(kotlin.Int, kotlin.Int, androidx.recyclerview.widget.RecyclerView)/view">view</span><span class="symbol">:</span>&nbsp;<span class="identifier">RecyclerView</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="on-scrolled.html">onScrolled</a></p>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">onScrolled</span><span class="symbol">(</span><span class="identifier" id="com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener$onScrolled(androidx.recyclerview.widget.RecyclerView, kotlin.Int, kotlin.Int)/view">view</span><span class="symbol">:</span>&nbsp;<span class="identifier">RecyclerView</span><span class="symbol">, </span><span class="identifier" id="com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener$onScrolled(androidx.recyclerview.widget.RecyclerView, kotlin.Int, kotlin.Int)/dx">dx</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="com.appdev.epitech.epicture.listeners.EndlessRecyclerViewScrollListener$onScrolled(androidx.recyclerview.widget.RecyclerView, kotlin.Int, kotlin.Int)/dy">dy</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="reset-state.html">resetState</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">resetState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
